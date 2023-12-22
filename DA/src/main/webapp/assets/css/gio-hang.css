@@ -1,0 +1,29 @@
+
+.btn-sm:hover {
+    color: white;
+    background: black;
+}
+.btn-sm {
+    color: black;
+    background: white;
+    border: 1px solid black;
+}
+
+.product-image {
+    max-width: 50px;
+    max-height: 50px;
+    object-fit: cover;
+}
+
+#cart-item-count {
+    position: relative;
+    display: inline-block;
+}
+
+#cart-count {
+    padding: 1px 4px;
+    font-size: 12px;
+    position: absolute;
+    top: -1px;
+    right: 5px;
+}
