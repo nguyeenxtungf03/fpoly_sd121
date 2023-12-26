@@ -227,6 +227,9 @@ public class TrangChuController {
                     String idGioHang = gioHangChiTietService.detailTkGh(ipAddress);
                     model.addAttribute("idGioHang", idGioHang);
 
+                    List<GioHangChiTietDto> listGhctDto = gioHangChiTietService.getGioHangChiTiet(ipAddress);
+                    model.addAttribute("listGhct", listGhctDto);
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -246,6 +249,12 @@ public class TrangChuController {
 
                 String idGioHang = gioHangChiTietService.detailTkGh(tk);
                 model.addAttribute("idGioHang", idGioHang);
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username = authentication.getName();
+                // Gọi service để lấy danh sách chi tiết giỏ hàng
+                List<GioHangChiTietDto> listGhctDto = gioHangChiTietService.getGioHangChiTiet(username);
+                model.addAttribute("listGhct", listGhctDto);
             }
             return "san_pham_chi_tiet/thongTinSp";
 
@@ -311,14 +320,6 @@ public class TrangChuController {
                 List<GioHangChiTietDto> listGhctDto = gioHangChiTietService.getGioHangChiTiet(ipAddress);
                 model.addAttribute("listGhct", listGhctDto);
 
-                Map<Long, Long> soLuongMuaMap = new HashMap<>();
-                for (GioHangChiTietDto gioHangChiTietDto : listGhctDto) {
-                    Long idSanPhamChiTiet = gioHangChiTietDto.getIdSanPhamChiTiet().getId();
-                    Long soLuongMua = gioHangChiTietDto.getSoLuong();
-                    soLuongMuaMap.put(idSanPhamChiTiet, soLuongMua);
-                }
-                model.addAttribute("soLuongMuaMap", soLuongMuaMap);
-
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
@@ -345,14 +346,6 @@ public class TrangChuController {
             List<GioHangChiTietDto> listGhctDto = gioHangChiTietService.getGioHangChiTiet(username);
             model.addAttribute("listGhct", listGhctDto);
 
-
-            Map<Long, Long> soLuongMuaMap = new HashMap<>();
-            for (GioHangChiTietDto gioHangChiTietDto : listGhctDto) {
-                Long idSanPhamChiTiet = gioHangChiTietDto.getIdSanPhamChiTiet().getId();
-                Long soLuongMua = gioHangChiTietDto.getSoLuong();
-                soLuongMuaMap.put(idSanPhamChiTiet, soLuongMua);
-            }
-            model.addAttribute("soLuongMuaMap", soLuongMuaMap);
 
         }
         return "san_pham_chi_tiet/thongTinSp";

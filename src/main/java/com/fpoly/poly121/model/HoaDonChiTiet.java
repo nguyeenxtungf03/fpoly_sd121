@@ -40,6 +40,8 @@ public class HoaDonChiTiet {
     @Column(name = "don_gia")
     private Long donGia;
 
+    @Column(name = "gia_goc")
+    private Long giaGoc;
 
     @Column(name = "ghi_chu")
     private String ghiChu;

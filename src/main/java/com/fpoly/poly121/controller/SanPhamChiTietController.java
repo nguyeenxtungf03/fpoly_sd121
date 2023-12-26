@@ -188,12 +188,6 @@ public class SanPhamChiTietController {
     }
 
 
-    @GetMapping("thuoc-tinh")
-    public String thuocTinh(Model model){
-        return "menu/thuoc_tinh";
-    }
-
-
     @GetMapping("delete/{id}")
     public String delete(@RequestParam(defaultValue = "0") Integer page,@PathVariable Long id, Model model) {
         try {

@@ -119,7 +119,9 @@
                                 </a>
                                 <ul>
                                     <c:if test="${isUser || isAdmin || isStaff}">
-                                        <li><a href="/trang-chu/detail-nguoi-dung"style="font-size: 16px; text-transform: uppercase">Tàikhoản : ${username }</a></li>
+                                        <li><a href="/trang-chu/detail-nguoi-dung"
+                                               style="font-size: 16px; text-transform: uppercase">Tàikhoản
+                                            : ${username }</a></li>
                                     </c:if>
                                     <c:if test="${isUser || isAdmin || isStaff}">
                                         <li><a href="/trang-chu/hoa-don">HÓA ĐƠN</a></li>
@@ -165,28 +167,32 @@
             <div class="col-lg-8">
                 <div class="left-images">
                     <div class="position-relative">
-                    <img src="/assets/images/imgSp/${spct.anhSanPham}" alt="">
-                    <c:if test="${spct.idKhuyenMai.loaiKhuyenMai != null and spct.idKhuyenMai.ngayBatDau < newDate}">
-                                        <span class="badge badge-danger position-absolute" style="top: 10px;left: 290px">
+                        <img src="/assets/images/imgSp/${spct.anhSanPham}" alt="">
+                        <c:if test="${spct.idKhuyenMai.loaiKhuyenMai != null and spct.idKhuyenMai.ngayBatDau < newDate}">
+                                        <span class="badge badge-danger position-absolute"
+                                              style="top: 10px;left: 290px">
                                             <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'product' && spct.idKhuyenMai.trangThai == 1}">Khuyến mãi ${spct.idKhuyenMai.giaTri} VNĐ</c:if>
                                             <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'percentage' && spct.idKhuyenMai.trangThai == 1}">Khuyến mãi ${spct.idKhuyenMai.giaTri} %</c:if>
                                         </span>
-                    </c:if>
-                </div>
+                        </c:if>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="right-content">
-                    <h4>${spct.idSanPham.tenSanPham}</h4>
+                    <h4>
+                        ${spct.idSanPham.tenSanPham}
+
+                    </h4>
                     <span class="price">
-                          <div class="d-flex" >
+                          <div class="d-flex">
                                         <span   ${spct.idKhuyenMai.loaiKhuyenMai  == null or spct.idKhuyenMai.ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${spct.giaBan} VNĐ </span>
                                         <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'percentage' and spct.idKhuyenMai.ngayBatDau < newDate}">
-                                            <span>  ${spct.giaBan - (spct.giaBan * spct.idKhuyenMai.giaTri / 100)} VNĐ</span>
+                                            <span> <fmt:formatNumber value="${spct.giaBan - (spct.giaBan * spct.idKhuyenMai.giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                         </c:if>
                                     <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'product' and spct.idKhuyenMai.ngayBatDau < newDate }">
                                         <c:if test="${spct.idKhuyenMai.giaTri <= spct.giaBan}">
-                                            <span>  ${spct.giaBan - spct.idKhuyenMai.giaTri} VNĐ </span>
+                                            <span> <fmt:formatNumber value="${spct.giaBan - spct.idKhuyenMai.giaTri}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                         </c:if>
                                         <c:if test="${spct.idKhuyenMai.giaTri > spct.giaBan}">
                                             <span> 0 VNĐ</span>
@@ -194,21 +200,27 @@
                                     </c:if>
                                     </div>
                     </span>
-                    <span> Số lượng còn : ${spct.soLuong}</span>
+                    <span> Số lượng còn : ${spct.soLuong} <c:if test="${spct.soLuong < 1}">
+                        <smail style="color: red ; font-weight: 600"> ( Hết hàng )</smail>
+                    </c:if></span>
                     <div class="quote">
                         <form action="/trang-chu/chi-tiet" method="get">
                         <span>Màu sắc :  <c:forEach items="${listms}" var="ms">
                             <input name="idSanPham" type="hidden" value="${spct.idSanPham.id}">
-                            <strong style="margin : 0 10px 0 5px ; font-weight: 500">   <input id="ms${ms.tenMauSac}" type="radio" name="idMauSac"
+                            <strong style="margin : 0 10px 0 5px ; font-weight: 500">   <input id="ms${ms.tenMauSac}"
+                                                                                               type="radio"
+                                                                                               name="idMauSac"
                                                                                                onchange="updateSelection()"
                                                                                                value="${ms.id}" ${spct.idMauSac.id == ms.id ? 'checked' : ''}>
                                  <label for="ms${ms.tenMauSac}">${ms.tenMauSac}</label> </strong>
                         </c:forEach>
                             </span>
                             <span> Kích cỡ :  <c:forEach items="${listkt}" var="kt">
-                               <strong style="margin : 0 10px 0 5px ; font-weight: 500">  <input id="kt${kt.tenKichThuoc}" type="radio" onchange="updateSelection()"
-                                                                                                 name="idKichThuoc"
-                                                                                                 value="${kt.id}" ${spct.idKichThuoc.id == kt.id ? 'checked' :''}> <label for="kt${kt.tenKichThuoc}">${kt.tenKichThuoc}</label>
+                               <strong style="margin : 0 10px 0 5px ; font-weight: 500">  <input
+                                       id="kt${kt.tenKichThuoc}" type="radio" onchange="updateSelection()"
+                                       name="idKichThuoc"
+                                       value="${kt.id}" ${spct.idKichThuoc.id == kt.id ? 'checked' :''}> <label
+                                       for="kt${kt.tenKichThuoc}">${kt.tenKichThuoc}</label>
                                </strong>
                             </c:forEach>
                             <button type="submit" style="display: none" id="submitButton">Cập nhật</button>
@@ -230,35 +242,28 @@
                             </div>
                             <div class="right-content">
                                 <div class="quantity buttons_added">
-                                    <input  type="button" value="-" class="minus">
+                                    <input type="button" value="-" class="minus">
                                     <input type="number" step="1" min="1" max="${spct.soLuong}"
                                            name="soLuong" value="1"
                                            title="Qty" class="input-text qty text quantity-input" size="4"
                                            pattern="" inputmode="">
-                                    <input id="quantityAlert1"  type="button" value="+"
+                                    <input id="quantityAlert1" type="button" value="+"
                                            class="plus">
                                 </div>
                             </div>
                         </div>
                         <!-- Thêm một hidden input để lưu giá sản phẩm -->
-                            <button  class="btn btn-outline-success"  type="submit">Thêm Vào Giỏ
-                                Hàng
+                        <c:if test="${spct.soLuong > 0}">
+                        <button class="btn btn-outline-success" type="submit">Thêm Vào Giỏ
+                            Hàng
+                        </button>
+                        </c:if>
+                        <c:if test="${spct.soLuong <= 0}">
+                            <button class="btn btn-outline-success" disabled style="color: red ;border: 1px solid red"  type="button">Sản phẩm đã bán hết
                             </button>
+                        </c:if>
                     </form>
                     <br>
-                    <form action="/gio-hang/mua-ngay" method="post">
-                        <div style="display: none">
-                            <input name="idSanPhamChiTiet" value="${spct.id}">
-                            <input name="idGioHang" value="${idGioHang}">
-                        </div>
-                            <input style="display: none"  type="number" step="1" min="1" max="20"
-                                   name="soLuong" value="1"
-                                   title="Qty" class="input-text qty text quantity-input" size="4"
-                                   pattern="" inputmode="">
-                        <div class="total">
-                            <button class="btn btn-outline-success" type="submit">Mua ngay</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -326,11 +331,10 @@
     </div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<div id="successToast"  class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true"
+<div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true"
      data-delay="1000" style="position: fixed; top: 20px; right: 20px;    z-index: 1051;background: white">
-    <div class="toast-body" style="color: #34ce57">
-        ${response}
+    <div class="toast-body" >
+
     </div>
 </div>
 <script>
@@ -374,7 +378,13 @@
                 data: formData,
                 success: function (response) {
                     $("#successToast .toast-body").text(response);
-
+                    if (response === "Sản phẩm thêm trong giỏ hàng không vượt quá số lượng tồn kho !") {
+                        // Áp dụng style khi response bằng một giá trị cụ thể
+                        $("#successToast .toast-body").css("color", "red");
+                    } else {
+                        // Áp dụng style khi response không bằng giá trị cụ thể
+                        $("#successToast .toast-body").css("color", "#34ce57");
+                    }
                     // Hiển thị và tự động ẩn Toast thành công
                     showSuccessToast();
                 },
@@ -383,7 +393,12 @@
                     console.error(xhr);
                     // Hiển thị thông báo lỗi từ server
                     if (xhr.responseText) {
-                        alert(xhr.responseText);
+                        $("#successToast .toast-body").text(xhr.responseText);
+                        if (xhr.responseText === "Lỗi khi thêm vào giỏ hàng") {
+                            // Áp dụng style khi response bằng một giá trị cụ thể
+                            $("#successToast .toast-body").css("color", "red");
+                        }
+                        showSuccessToast();
                     } else {
                         alert("Có lỗi xảy ra.");
                     }
