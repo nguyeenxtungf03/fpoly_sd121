@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
@@ -292,14 +293,14 @@
                                     <div class="down-content">
                                         <h4>${sp.getTen()}</h4>
                                         <div class="d-flex" >
-                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${sp.getGia()} VNĐ </span>
+                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}><fmt:formatNumber value="${sp.getGia()}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
 
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'percentage' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate}">
-                                                <span>  ${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)} VNĐ</span>
+                                                <span> <fmt:formatNumber value="${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                             </c:if>
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'product' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate }">
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri <= sp.getGia()}">
-                                                    <span>  ${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri} VNĐ </span>
+                                                    <span> <fmt:formatNumber value="${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                                 </c:if>
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri > sp.getGia()}">
                                                     <span> 0 VNĐ</span>
@@ -348,14 +349,14 @@
                                     <div class="down-content">
                                         <h4>${sp.getTen()}</h4>
                                         <div class="d-flex" >
-                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${sp.getGia()} VNĐ </span>
+                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}><fmt:formatNumber value="${sp.getGia()}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
 
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'percentage' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate}">
-                                                <span>  ${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)} VNĐ</span>
+                                                <span> <fmt:formatNumber value="${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                             </c:if>
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'product' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate }">
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri <= sp.getGia()}">
-                                                    <span>  ${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri} VNĐ </span>
+                                                    <span> <fmt:formatNumber value="${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                                 </c:if>
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri > sp.getGia()}">
                                                     <span> 0 VNĐ</span>
@@ -407,14 +408,14 @@
                                     <div class="down-content">
                                         <h4>${sp.getTen()}</h4>
                                         <div class="d-flex" >
-                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${sp.getGia()} VNĐ </span>
+                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}><fmt:formatNumber value="${sp.getGia()}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
 
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'percentage' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate}">
-                                                <span>  ${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)} VNĐ</span>
+                                                <span> <fmt:formatNumber value="${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                             </c:if>
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'product' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate }">
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri <= sp.getGia()}">
-                                                    <span>  ${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri} VNĐ </span>
+                                                    <span> <fmt:formatNumber value="${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                                 </c:if>
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri > sp.getGia()}">
                                                     <span> 0 VNĐ</span>
@@ -463,14 +464,14 @@
                                     <div class="down-content">
                                         <h4>${sp.getTen()}</h4>
                                         <div class="d-flex" >
-                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${sp.getGia()} VNĐ </span>
+                                            <span   ${mapIdSpKm.get(sp.getIdSp())  == null or mapIdSpKm.get(sp.getIdSp()).ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}><fmt:formatNumber value="${sp.getGia()}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
 
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'percentage' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate}">
-                                                <span>  ${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)} VNĐ</span>
+                                                <span> <fmt:formatNumber value="${sp.getGia() - (sp.getGia() * mapIdSpKm.get(sp.getIdSp()).giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                             </c:if>
                                             <c:if test="${mapIdSpKm.get(sp.getIdSp()).loaiKhuyenMai == 'product' and mapIdSpKm.get(sp.getIdSp()).ngayBatDau < newDate }">
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri <= sp.getGia()}">
-                                                    <span>  ${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri} VNĐ </span>
+                                                    <span> <fmt:formatNumber value="${sp.getGia() - mapIdSpKm.get(sp.getIdSp()).giaTri}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                                 </c:if>
                                                 <c:if test="${mapIdSpKm.get(sp.getIdSp()).giaTri > sp.getGia()}">
                                                     <span> 0 VNĐ</span>

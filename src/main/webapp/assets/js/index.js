@@ -73,7 +73,7 @@ var printResult = () => {
     const wardText = $("#ward option:selected").text();
 
     if (districtText !== "" && provinceText !== "" && wardText !== "") {
-        let result = `${provinceText} ,${districtText} ,${wardText} `;
+        let result = `${provinceText} ,${districtText} ,${wardText} , `;
         $("#result").text(result);
     }
 }

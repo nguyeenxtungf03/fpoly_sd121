@@ -217,8 +217,11 @@
                         src="/assets/images/imgSp/${hdct.idSanPhamChiTiet.anhSanPham}"></a></th>
                 <td>${hdct.idSanPhamChiTiet.idSanPham.tenSanPham}</td>
                 <td>${hdct.soLuong}</td>
-                <td><fmt:formatNumber value="${hdct.donGia}" pattern="##,###,###"></fmt:formatNumber>
-                    ₫
+                <td>
+                    <c:if test="${hdct.donGia < hdct.giaGoc}">
+                    <small style="color: red ; text-decoration: line-through ; margin-right: 3px"> <fmt:formatNumber  value="${hdct.giaGoc}" pattern="##,###,###"></fmt:formatNumber> ₫  </small>
+                    </c:if>
+                    <span> <fmt:formatNumber value="${hdct.donGia}" pattern="##,###,###"></fmt:formatNumber> ₫ </span> </td>
                 </td>
                 <td><fmt:formatNumber value="${hdct.soLuong * hdct.donGia}"
                                       pattern="##,###,###"></fmt:formatNumber> ₫

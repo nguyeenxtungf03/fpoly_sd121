@@ -114,7 +114,9 @@
                                 </a>
                                 <ul>
                                     <c:if test="${isUser || isAdmin || isStaff}">
-                                        <li><a href="/trang-chu/detail-nguoi-dung"style="font-size: 16px; text-transform: uppercase">Tàikhoản : ${username }</a></li>
+                                        <li><a href="/trang-chu/detail-nguoi-dung"
+                                               style="font-size: 16px; text-transform: uppercase">Tàikhoản
+                                            : ${username }</a></li>
                                     </c:if>
                                     <c:if test="${isUser || isAdmin || isStaff}">
                                         <li><a href="/trang-chu/hoa-don">HÓA ĐƠN</a></li>
@@ -150,6 +152,11 @@
             <h2 style="text-align: center">Giỏ Hàng</h2>
         </div>
         <br>
+        <span style="color: red ; margin: 0 0 5px 5px ; padding: 2px">
+            <c:if test="${not empty errors}">
+                [ ${errors} ]
+            </c:if>
+        </span>
         <table class="table">
             <thead>
             <tr>
@@ -159,7 +166,6 @@
                 <th scope="col">Đơn Giá</th>
                 <th scope="col">Thành Tiền</th>
                 <th scope="col">Chức Năng</th>
-                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -170,7 +176,8 @@
                                 src="/assets/images/imgSp/${gh.idSanPhamChiTiet.anhSanPham}" alt="Product"
                                 class="product-image"></a></td>
                         <td>${gh.idSanPhamChiTiet.idSanPham.tenSanPham} <br> [ ${gh.idSanPhamChiTiet.idMauSac.tenMauSac}
-                            - ${gh.idSanPhamChiTiet.idKichThuoc.tenKichThuoc} ] <span style="color: #b3b7bb ;font-size: 12px">(Số lượng còn ${gh.idSanPhamChiTiet.soLuong})</span>
+                            - ${gh.idSanPhamChiTiet.idKichThuoc.tenKichThuoc} ] <span
+                                    style="color: #b3b7bb ;font-size: 12px">(Số lượng còn ${gh.idSanPhamChiTiet.soLuong})</span>
                         </td>
                         <td>
                             <div class="right-content">
@@ -180,7 +187,7 @@
                                     <input onclick="addToCart()" type="number" step="1"
                                            name="soLuongThem" value="${gh.soLuong}"
                                            title="Qty" class="input-text qty text quantity-input" size="4"
-                                           pattern="" inputmode="" >
+                                           pattern="" inputmode="">
                                     <input onchange="updateSelection()" id="quantityAlert1" onclick="addToCart()"
                                            type="submit" value="+"
                                            class="plus">
@@ -190,16 +197,32 @@
                         <td>
                             <div class="d-flex">
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == null or gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau > newDate}">
-                                    ${gh.idSanPhamChiTiet.giaBan} ₫
+                                    <fmt:formatNumber
+                                            value="${gh.idSanPhamChiTiet.giaBan}"
+                                            pattern="##,###,###"></fmt:formatNumber> ₫
                                 </c:if>
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == 'percentage' and gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau < newDate}">
-                                    <span>  ${gh.idSanPhamChiTiet.giaBan - (gh.idSanPhamChiTiet.giaBan * gh.idSanPhamChiTiet.idKhuyenMai.giaTri / 100)} ₫</span>
+                                    <span> <small style="color: red ; text-decoration: line-through"><fmt:formatNumber
+                                            value="${gh.idSanPhamChiTiet.giaBan}"
+                                            pattern="##,###,###"></fmt:formatNumber> ₫</small>  <fmt:formatNumber
+                                            value="${gh.idSanPhamChiTiet.giaBan - (gh.idSanPhamChiTiet.giaBan * gh.idSanPhamChiTiet.idKhuyenMai.giaTri / 100)}"
+                                            pattern="##,###,###"></fmt:formatNumber>  ₫</span>
                                 </c:if>
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == 'product' and gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau < newDate }">
-                                    <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.giaTri <= gh.idSanPhamChiTiet.giaBan}">
-                                        <span>  ${gh.idSanPhamChiTiet.giaBan - gh.idSanPhamChiTiet.idKhuyenMai.giaTri} ₫ </span>
+                                <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.giaTri <= gh.idSanPhamChiTiet.giaBan}">
+                                <span>
+                                            <span> <small
+                                                    style="color: red ; text-decoration: line-through"><fmt:formatNumber
+                                                    value="${gh.idSanPhamChiTiet.giaBan}"
+                                                    pattern="##,###,###"></fmt:formatNumber> ₫</small> <fmt:formatNumber
+                                                    value="${gh.idSanPhamChiTiet.giaBan - gh.idSanPhamChiTiet.idKhuyenMai.giaTri}"
+                                                    pattern="##,###,###"></fmt:formatNumber> ₫</span>
                                     </c:if>
                                     <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.giaTri > gh.idSanPhamChiTiet.giaBan}">
+                                            <span> <small
+                                                    style="color: red ; text-decoration: line-through"><fmt:formatNumber
+                                                    value="${gh.idSanPhamChiTiet.giaBan}"
+                                                    pattern="##,###,###"></fmt:formatNumber> ₫</small>
                                         <span> 0 ₫</span>
                                     </c:if>
                                 </c:if>
@@ -208,7 +231,9 @@
                         <td>
                             <div class="d-flex">
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == null or gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau > newDate}">
-                                    ${gh.idSanPhamChiTiet.giaBan * gh.soLuong} ₫
+                                    <fmt:formatNumber
+                                            value="${gh.idSanPhamChiTiet.giaBan * gh.soLuong}"
+                                            pattern="##,###,###"></fmt:formatNumber> ₫
                                 </c:if>
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == 'percentage' and gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau < newDate}">
                                 <span> <fmt:formatNumber
@@ -217,7 +242,9 @@
                                 </c:if>
                                 <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.loaiKhuyenMai == 'product' and gh.idSanPhamChiTiet.idKhuyenMai.ngayBatDau < newDate }">
                                     <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.giaTri <= gh.idSanPhamChiTiet.giaBan}">
-                                        <span>  ${(gh.idSanPhamChiTiet.giaBan - gh.idSanPhamChiTiet.idKhuyenMai.giaTri) * gh.soLuong} ₫ </span>
+                                        <span><fmt:formatNumber
+                                                value="${(gh.idSanPhamChiTiet.giaBan - gh.idSanPhamChiTiet.idKhuyenMai.giaTri) * gh.soLuong}"
+                                                pattern="##,###,###"></fmt:formatNumber> ₫ </span>
                                     </c:if>
                                     <c:if test="${gh.idSanPhamChiTiet.idKhuyenMai.giaTri > gh.idSanPhamChiTiet.giaBan}">
                                         <span> 0 ₫</span>
@@ -266,16 +293,15 @@
                     </div>
                 </td>
             </c:forEach>
-
             </tbody>
         </table>
-        <c:if test="${ empty errors}">
-            <span style="color: red">* Lưu ý : Tổng số lượng đơn hàng cho phép tối đa 20 sản phẩm </span><br>
+        <c:if test="${not empty pass}">
+            <p style="color: #34ce57 ;text-align: center ; font-size: xx-large ; padding: 20px">${pass}</p><br>
         </c:if>
-        <span style="color: red">${errors}</span>
-        <p style="color: #34ce57 ;text-align: center ; font-size: x-large">${pass}</p><Br>
-
         <div class="text-left">
+            <span>* Lưu ý : Tổng số lượng đơn hàng cho phép tối đa 20 sản phẩm </span>
+        </div>
+        <div class="text-right">
             <p><strong> <c:set var="totalQuantity" value="0"/>
                 <c:forEach var="gh" items="${listGhct}">
                     <c:set var="totalQuantity"
@@ -291,65 +317,66 @@
                 Thành tiền <span style="font-weight: 600"> : <span id="totalAmount"><fmt:formatNumber
                     value="${totalAmount  }"
                     pattern="##,###,###"></fmt:formatNumber> ₫</span>
-            </span><br><br>
+            </span><br>
             </c:if>
         </div>
-
-
     </div>
 </section>
-<section class="section">
+<section style="margin-top: 10px" class="section">
     <div class="container">
         <h2 class="mb-4">Thông tin khách hàng</h2>
         <form method="post" action="/gio-hang/thanh-toan">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="ho">Họ và tên đệm:</label>
+                    <label for="ho">* Họ và tên đệm:</label>
                     <input name="hoNguoiNhan" value="${hoNguoiNhan}" type="text" class="form-control" id="ho"
                            placeholder="Nhập họ và tên đệm của bạn"
                            required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="ten">Tên:</label>
-                    <input name="tenNguoiNhan" value="${tenNguoiNhan}"  type="text" class="form-control" id="ten" placeholder="Nhập tên của bạn"
+                    <label for="ten">* Tên:</label>
+                    <input name="tenNguoiNhan" value="${tenNguoiNhan}" type="text" class="form-control" id="ten"
+                           placeholder="Nhập tên của bạn"
                            required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="sdt">Số Điện Thoại:</label>
-                <input name="sdtNguoiNhan" type="number" value="${sdtNguoiNhan}" oninput="limitAndStartWithZero(this, 10)" class="form-control"
+                <label for="sdt">* Số Điện Thoại:</label>
+                <input name="sdtNguoiNhan" type="number" value="${sdtNguoiNhan}"
+                       oninput="limitAndStartWithZero(this, 10)" class="form-control"
                        id="sdt" placeholder="Nhập số điện thoại"
                        required>
             </div>
 
             <div class="form-group">
-                <label for="province">Địa chỉ:</label>
+                <label for="province">* Địa chỉ:</label>
                 <div class="row-12" style="display: flex; justify-content: space-between">
-                    <select class="col-md-4 form-control" name="" id="province"></select>
-                    <select class="col-md-4 form-control" name="" id="district">
+                    <select class="col-md-4 form-control" name="tinh" id="province" required>
+                    </select>
+                    <select class="col-md-4 form-control" name="huyen" id="district" required>
                         <option value="">Chọn quận</option>
                     </select>
-                    <select class="col-md-3 form-control" name="" id="ward">
+                    <select class="col-md-3 form-control" name="phuong" id="ward" required>
                         <option value="">Chọn phường</option>
                     </select>
                 </div>
-
-                <div class="form-group" style="display: none">
-               <textarea name="diaChiNhan"   class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
-                         ></textarea><br>
-                </div>
+                <textarea name="diaChi" style="display: none" id="result" class="form-control" rows="3"
+                          placeholder="Nhập địa chỉ của bạn"
+                >${diaChi}</textarea>
                 <br>
                 <!-- Thêm phần hiển thị giá vận chuyển -->
                 <div class="form-group">
-                    <label for="shippingFeeInput">Phí Vận Chuyển:  0 VNĐ</label>
-                    <input name="phiVanChuyen" style="display: none" value="0" type="text" class="form-control" id="shippingFeeInput"
-                           readonly >
+                    <label for="shippingFeeInput">Phí Vận Chuyển: 0 VNĐ</label>
+                    <input name="phiVanChuyen" style="display: none" value="0" type="text" class="form-control"
+                           id="shippingFeeInput"
+                           readonly>
                 </div>
             </div>
-            <label>Địa Chỉ Cụ Thể:</label>
+            <label>* Địa Chỉ Cụ Thể:</label>
 
-            <textarea name="diaChiNhan"  id="result" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
-                      >${diaChiNhan} </textarea><br>
+            <textarea name="diaChiNhan" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
+            >${diaChiNhan} </textarea><br>
+            <span style="color: red">${notBlank}</span>
             <div class="text-center">
                 <button type="submit" style="background: black ; color: white ; border: black solid 2px"
                         class="btn btn-primary">Thanh Toán
@@ -416,6 +443,7 @@
         </div>
     </div>
 </footer>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="

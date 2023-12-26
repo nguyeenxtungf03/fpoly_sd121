@@ -22,7 +22,6 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
             "GROUP BY ct.idGioHang, ct.idSanPhamChiTiet, ct.idGioHang.idKhachHang.tenTaiKhoan")
     List<Object[]> listGhct(String tk);
 
-
     @Transactional
     @Modifying
     @Query("DELETE FROM GioHangChiTiet gh WHERE gh.idSanPhamChiTiet = :idSpct")
