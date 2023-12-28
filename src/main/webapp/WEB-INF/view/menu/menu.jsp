@@ -19,7 +19,7 @@
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-            <a class="navbar-brand ps-3" href="index.html">
+            <a class="navbar-brand ps-3" href="/trang-chu">
                 <i class="bi bi-house-door"></i>
                 Trang chủ
             </a>

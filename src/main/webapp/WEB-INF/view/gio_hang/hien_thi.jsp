@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
           rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 
     <title>Hexashop - Product Detail Page</title>
 
@@ -175,20 +176,20 @@
                         <td><a href="/trang-chu/chi-tiet/${gh.idSanPhamChiTiet.id}"><img
                                 src="/assets/images/imgSp/${gh.idSanPhamChiTiet.anhSanPham}" alt="Product"
                                 class="product-image"></a></td>
-                        <td>${gh.idSanPhamChiTiet.idSanPham.tenSanPham} <br> [ ${gh.idSanPhamChiTiet.idMauSac.tenMauSac}
+                        <td>${gh.idSanPhamChiTiet.idSanPham.tenSanPham} <c:if test="${gh.idSanPhamChiTiet.soLuong < 1}"><small style="color: red">( Hết hàng )</small></c:if> <br> [ ${gh.idSanPhamChiTiet.idMauSac.tenMauSac}
                             - ${gh.idSanPhamChiTiet.idKichThuoc.tenKichThuoc} ] <span
                                     style="color: #b3b7bb ;font-size: 12px">(Số lượng còn ${gh.idSanPhamChiTiet.soLuong})</span>
                         </td>
                         <td>
                             <div class="right-content">
                                 <div class="quantity buttons_added">
-                                    <input onchange="updateSelection()" onclick="addToCart()" type="submit" value="-"
+                                    <input onchange="updateSelection()"  type="submit" value="-"
                                            class="minus">
-                                    <input onclick="addToCart()" type="number" step="1"
+                                    <input  type="number" step="1"
                                            name="soLuongThem" value="${gh.soLuong}"
                                            title="Qty" class="input-text qty text quantity-input" size="4"
                                            pattern="" inputmode="">
-                                    <input onchange="updateSelection()" id="quantityAlert1" onclick="addToCart()"
+                                    <input onchange="updateSelection()" id="quantityAlert1"
                                            type="submit" value="+"
                                            class="plus">
                                 </div>
@@ -296,7 +297,9 @@
             </tbody>
         </table>
         <c:if test="${not empty pass}">
-            <p style="color: #34ce57 ;text-align: center ; font-size: xx-large ; padding: 20px">${pass}</p><br>
+            <p style="color: #34ce57 ;text-align: center ; font-size: xx-large ; padding: 20px">${pass}</p>
+            <small style="font-size : 20px;justify-content: center;display: flex;flex-wrap: wrap;"><a href="http://localhost:8080/trang-chu/hoa-don-chi-tiet?idHD=${idHoaDon}">Theo dõi đơn hàng  <i class="bi bi-arrow-right-circle-fill"></i></a></small>
+            <br>
         </c:if>
         <div class="text-left">
             <span>* Lưu ý : Tổng số lượng đơn hàng cho phép tối đa 20 sản phẩm </span>
@@ -379,7 +382,7 @@
             <span style="color: red">${notBlank}</span>
             <div class="text-center">
                 <button type="submit" style="background: black ; color: white ; border: black solid 2px"
-                        class="btn btn-primary">Thanh Toán
+                        onclick="confirmAction(event)"  class="btn btn-primary">Đặt Hàng
                 </button>
             </div>
         </form>
@@ -481,6 +484,17 @@
         console.log('Radio button changed');
         // Thêm mã JavaScript của bạn tại đây, ví dụ như kích hoạt sự kiện của button
         document.getElementById('submitButton').click();
+    }
+</script>
+<script>
+    function confirmAction(event) {
+        // Hiển thị hộp thoại xác nhận
+        if (confirm("Bạn có chắc muốn đặt hàng?")) {
+            // Nếu người dùng chấp nhận, thực hiện chuyển hướng
+            window.location.href = event.currentTarget.querySelector('button').getAttribute('submit');
+        }
+        // Ngăn chặn sự kiện mặc định (nhảy trang)
+        event.preventDefault();
     }
 </script>
 <script>

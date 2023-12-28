@@ -514,7 +514,7 @@ public class GioHangChiTietController {
                 hoaDon.setThanhTien(tongTien);
                 hoaDon.setLoaiHoaDon(1L);
                 if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null || diaChi == null) {
-                    model.addAttribute("errors", "Lỗi nhận dạng dữ liệu");
+                    model.addAttribute("errors", "Vui lòng điền đầy đủ thông tin để tiếp tục đặt hàng !");
                     model.addAttribute("listGhct", listGhctDto);
                     return "gio_hang/hien_thi";
                 } else {
@@ -542,28 +542,28 @@ public class GioHangChiTietController {
                             // xoa gio hang khi nguoi dung dang nhap
                             String gioHangId = gioHangChiTietService.detailTkGh(tk);
                             gioHangChiTietService.deleteByIdGioHang(gioHangId);
-
                         }
-
                         // thong bao khi thanh toan thanh cong
                         model.addAttribute("pass", "Đơn hàng đã đặt thành công !");
-                        List<GioHangChiTietDto> listXoaGh = null;
-                        model.addAttribute("listGhct", listXoaGh);
+                        model.addAttribute("idHoaDon", hoaDon.getId());
+                        model.addAttribute("listGhct", null);
                         model.addAttribute("hoNguoiNhan", null);
                         model.addAttribute("tenNguoiNhan", null);
                         model.addAttribute("sdtNguoiNhan", null);
                         model.addAttribute("diaChiNhan", null);
                         model.addAttribute("diaChi", null);
+                        model.addAttribute("idHoaDon", hoaDon.getId());
                         return "gio_hang/hien_thi";
                     }
+
                 }
             }
             model.addAttribute("listGhct", listGhctDto);
             model.addAttribute("newDate", new Date());
             return "gio_hang/hien_thi";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("errors" , e.getMessage());
+            model.addAttribute("errors", e.getMessage());
             return "gio_hang/hien_thi";
         }
     }

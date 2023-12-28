@@ -36,11 +36,6 @@ public class HoaDonController {
     private List<HoaDon> listHd1;
 
     @Autowired
-    private KhachHangRepository khachHangRepository;
-    private List<KhachHang> listKh;
-
-
-    @Autowired
     private HoaDonChiTietService hoaDonChiTietService;
     private List<HoaDonChiTiet> listHdct;
 
@@ -49,10 +44,6 @@ public class HoaDonController {
 
     @Autowired
     private SanPhamChiTietReponsitory sanPhamChiTietReponsitory;
-
-
-    @Autowired
-    private HoaDonChiTietReponsitory hoaDonChiTietReponsitory;
 
 
     @GetMapping("hien-thi")
@@ -158,24 +149,6 @@ public class HoaDonController {
         return "thong_ke/top10";
     }
 
-    @PostMapping("trang-thai-xac-nhan")
-    public String trangThaiXacNhan(@RequestParam Long idHoaDon){
-        hoaDonService.updateTrangThaiXacNhan(idHoaDon);
-        return "redirect:/hoa-don/hien-thi";
-    }
-
-    @PostMapping("trang-thai-hoan-thanh")
-    public String trangThaiHoanThanh(@RequestParam Long idHoaDon){
-        hoaDonService.updateTrangThaiHoanThanh(idHoaDon);
-        return "redirect:/hoa-don/hien-thi";
-    }
-
-    @PostMapping("trang-thai-huy")
-    public String trangThaiHuy(@RequestParam Long idHoaDon){
-        hoaDonService.updateTrangThaiHuy(idHoaDon);
-        return "redirect:/hoa-don/hien-thi";
-    }
-
     @GetMapping("trang-thai")
     public String trangThai(@RequestParam(required = false) Long trangThai, Model model){
        listHd =  hoaDonReponsitory.trangThaiHoaDon(trangThai);
@@ -204,17 +177,29 @@ public class HoaDonController {
 
     @Transactional
     @PostMapping("trang-thai-don-hang-khach-hang")
-    public String trangThaiHoaDonKhachHang(@RequestParam(required = false) Long trangThai , @RequestParam(required = false) Long idHoaDon){
-        hoaDonReponsitory.updateTrangThai(trangThai,idHoaDon);
-        hoaDonReponsitory.updateNgay(new Date() , idHoaDon);
-        if (trangThai == 7 ){
-            // san pham trong gio hang
-            List<HoaDonChiTiet> listHdct = sanPhamChiTietReponsitory.findHdctByidHd(idHoaDon);
-            for (HoaDonChiTiet hoaDonChiTiet : listHdct) {
-                SanPhamChiTiet spct = hoaDonChiTiet.getIdSanPhamChiTiet();
-                spct.setSoLuong(spct.getSoLuong() + hoaDonChiTiet.getSoLuong());
-                sanPhamChiTietReponsitory.save(spct);
+    public String trangThaiHoaDonKhachHang(@RequestParam(required = false) String trangThai , @RequestParam(required = false) Long idHoaDon , Model model) {
+        try {
+            try {
+                long trangThaiHuy = Long.parseLong(trangThai);
+                if (trangThaiHuy == 7) {
+                    hoaDonReponsitory.updateTrangThai(trangThaiHuy, idHoaDon);
+                    hoaDonReponsitory.updateNgay(new Date(), idHoaDon);
+                    // san pham trong gio hang
+                    List<HoaDonChiTiet> listHdct = sanPhamChiTietReponsitory.findHdctByidHd(idHoaDon);
+                    for (HoaDonChiTiet hoaDonChiTiet : listHdct) {
+                        SanPhamChiTiet spct = hoaDonChiTiet.getIdSanPhamChiTiet();
+                        spct.setSoLuong(spct.getSoLuong() + hoaDonChiTiet.getSoLuong());
+                        sanPhamChiTietReponsitory.save(spct);
+                    }
+                }
+                if (trangThaiHuy != 7) {
+                    model.addAttribute("Lỗi hủy đơn hàng ");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return "redirect:/trang-chu";
     }
