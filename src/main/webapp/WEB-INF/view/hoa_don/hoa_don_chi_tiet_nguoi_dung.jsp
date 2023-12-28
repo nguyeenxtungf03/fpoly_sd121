@@ -191,7 +191,7 @@
                     <form  action="/hoa-don/trang-thai-don-hang-khach-hang" method="post">
                         <input name="trangThai" type="hidden" value="7">
                         <input name="idHoaDon" type="hidden" value="${hd.id}">
-                        <button style="background: red ">Huỷ Đơn Hàng</button>
+                        <button onclick="confirmAction(event)"  style="background: red ">Huỷ Đơn Hàng</button>
                     </form>
                 </div>
             </c:if>
@@ -323,6 +323,17 @@
 <script src="/assets/js/custom.js"></script>
 
 <script>
+    function confirmAction(event) {
+        // Hiển thị hộp thoại xác nhận
+        if (confirm("Bạn có chắc muốn hủy đơn hàng ${hd.id} ?")) {
+            // Nếu người dùng chấp nhận, thực hiện chuyển hướng
+            window.location.href = event.currentTarget.querySelector('button').getAttribute('submit');
+        }
+        // Ngăn chặn sự kiện mặc định (nhảy trang)
+        event.preventDefault();
+    }
+</script>
+<script>
 
     $(function () {
         var selectedClass = "";
@@ -343,24 +354,5 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<style>
-    .btn-sm:hover {
-        color: white;
-        background: black;
-    }
-
-    .btn-sm {
-        color: black;
-        background: white;
-        border: 1px solid black;
-    }
-
-    .product-image {
-        max-width: 50px;
-        max-height: 50px;
-        object-fit: cover;
-    }
-</style>
-
 </body>
 </html>

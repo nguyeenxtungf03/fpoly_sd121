@@ -159,7 +159,7 @@
 
                 <td scope="row"
                     style="display: flex;flex-direction: column ; gap: 1rem ; align-items: center ">
-                    <button class="btn btn-outline-success"><a onclick="confirmAction()" class="navbar-brand"
+                    <button class="btn btn-outline-success"><a onclick="confirmAction(event)" class="navbar-brand"
                                                                href="/san-pham-chi-tiet/delete/${spct.id}"> <i
                             class="fas fa-trash"></i></a>
                     </button>

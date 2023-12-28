@@ -186,7 +186,7 @@
                     </h4>
                     <span class="price">
                           <div class="d-flex">
-                                        <span   ${spct.idKhuyenMai.loaiKhuyenMai  == null or spct.idKhuyenMai.ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px"'}>${spct.giaBan} VNĐ </span>
+                                        <span   ${spct.idKhuyenMai.loaiKhuyenMai  == null or spct.idKhuyenMai.ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px ; font-size : 15px"'}><fmt:formatNumber value="${spct.giaBan}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
                                         <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'percentage' and spct.idKhuyenMai.ngayBatDau < newDate}">
                                             <span> <fmt:formatNumber value="${spct.giaBan - (spct.giaBan * spct.idKhuyenMai.giaTri / 100)}" pattern="##,###,###"></fmt:formatNumber> VNĐ</span>
                                         </c:if>

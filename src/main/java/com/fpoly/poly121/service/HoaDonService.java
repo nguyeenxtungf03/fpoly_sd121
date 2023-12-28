@@ -24,10 +24,5 @@ public interface HoaDonService {
 
     List<HoaDon> findHoaDonByTaiKhoan( String tk);
 
-    void updateTrangThaiXacNhan(Long idHd);
-
-    void updateTrangThaiHoanThanh(Long idHd);
-
-    void updateTrangThaiHuy(Long idHd);
 
 }

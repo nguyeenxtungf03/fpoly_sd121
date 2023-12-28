@@ -63,23 +63,4 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
 
-    @Transactional
-    @Override
-    public void updateTrangThaiXacNhan(Long idHd) {
-        hoaDonReponsitory.updateTrangThaiXacNhan(idHd);
-    }
-
-    @Transactional
-    @Override
-    public void updateTrangThaiHoanThanh(Long idHd) {
-        hoaDonReponsitory.updateTrangThaiHoanThanh(idHd);
-
-    }
-
-    @Transactional
-    @Override
-    public void updateTrangThaiHuy(Long idHd) {
-        hoaDonReponsitory.updateTrangThaiHuy(idHd);
-
-    }
 }
