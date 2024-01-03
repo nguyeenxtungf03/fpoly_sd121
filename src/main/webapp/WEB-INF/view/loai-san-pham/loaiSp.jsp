@@ -15,9 +15,9 @@
 </head>
 
 <body class="container">
-<form id="myForm5" action="/loai-san-pham/add" method="post">
+<form class="row g-3 needs-validation"class="row g-3 needs-validation" id="myForm5" action="/loai-san-pham/add" method="post">
     <span>Tên loại sản phẩm </span><br>
-    <input style="height: 100%" type="text" required name="tenLoai"><br>
+    <input class="form-control"class="form-control" style="height: 100%" type="text" required name="tenLoai"><br>
     <span style="color: red">${errors}</span><br>
     <button class="btn btn-primary" type="submit">Thêm</button>
 </form>

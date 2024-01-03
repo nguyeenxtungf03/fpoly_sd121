@@ -153,11 +153,13 @@
             <h2 style="text-align: center">Giỏ Hàng</h2>
         </div>
         <br>
-        <span style="color: red ; margin: 0 0 5px 5px ; padding: 2px">
-            <c:if test="${not empty errors}">
-                [ ${errors} ]
-            </c:if>
-        </span>
+        <div style="margin: 0 0 7px 5px ">
+        <c:if test="${not empty errors}">
+            <span style="background: white ; color: red ; border: red solid 2px"
+                class="btn btn-primary">${errors}
+            </span>
+        </c:if>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -302,7 +304,7 @@
             <br>
         </c:if>
         <div class="text-left">
-            <span>* Lưu ý : Tổng số lượng đơn hàng cho phép tối đa 20 sản phẩm </span>
+            <span>* Lưu ý : Tổng số lượng đơn hàng mua cho phép tối đa 20 sản phẩm </span>
         </div>
         <div class="text-right">
             <p><strong> <c:set var="totalQuantity" value="0"/>
@@ -318,7 +320,7 @@
     </span><br>
                 Phí vận chuyển : <span id="shippingFeeDisplay" style="font-weight: 600">0 ₫</span><br>
                 Thành tiền <span style="font-weight: 600"> : <span id="totalAmount"><fmt:formatNumber
-                    value="${totalAmount  }"
+                    value="${totalAmount}"
                     pattern="##,###,###"></fmt:formatNumber> ₫</span>
             </span><br>
             </c:if>
@@ -328,23 +330,23 @@
 <section style="margin-top: 10px" class="section">
     <div class="container">
         <h2 class="mb-4">Thông tin khách hàng</h2>
-        <form method="post" action="/gio-hang/thanh-toan">
+        <form   method="post" action="/gio-hang/thanh-toan">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="ho">* Họ và tên đệm:</label>
+                    <label for="ho"><span style="color: red">*</span> Họ và tên đệm:</label>
                     <input name="hoNguoiNhan" value="${hoNguoiNhan}" type="text" class="form-control" id="ho"
                            placeholder="Nhập họ và tên đệm của bạn"
                            required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="ten">* Tên:</label>
+                    <label for="ten"><span style="color: red">*</span> Tên:</label>
                     <input name="tenNguoiNhan" value="${tenNguoiNhan}" type="text" class="form-control" id="ten"
                            placeholder="Nhập tên của bạn"
                            required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="sdt">* Số Điện Thoại:</label>
+                <label for="sdt"><span style="color: red">*</span> Số Điện Thoại:</label>
                 <input name="sdtNguoiNhan" type="number" value="${sdtNguoiNhan}"
                        oninput="limitAndStartWithZero(this, 10)" class="form-control"
                        id="sdt" placeholder="Nhập số điện thoại"
@@ -352,7 +354,7 @@
             </div>
 
             <div class="form-group">
-                <label for="province">* Địa chỉ:</label>
+                <label for="province"><span style="color: red">*</span> Địa chỉ:</label>
                 <div class="row-12" style="display: flex; justify-content: space-between">
                     <select class="col-md-4 form-control" name="tinh" id="province" required>
                     </select>
@@ -375,17 +377,38 @@
                            readonly>
                 </div>
             </div>
-            <label>* Địa Chỉ Cụ Thể:</label>
+            <label><span style="color: red">*</span> Địa Chỉ Cụ Thể:</label>
 
-            <textarea name="diaChiNhan" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
-            >${diaChiNhan} </textarea><br>
+            <textarea name="diaChiNhan" class="form-control" required rows="3" placeholder="Nhập địa chỉ của bạn"
+            >${diaChiNhan}</textarea><br>
             <span style="color: red">${notBlank}</span>
+            <c:if test="${ empty notBlank}">
+            <div class="text-left">
+                <span>* Chú ý : Điền đầy đủ thông tin có đánh dấu ( <span style="color: red">*</span> )
+            </div>
+            </c:if>
             <div class="text-center">
-                <button type="submit" style="background: black ; color: white ; border: black solid 2px"
-                        onclick="confirmAction(event)"  class="btn btn-primary">Đặt Hàng
-                </button>
+                <div> <c:set var="tongSoLuongSp" value="0"/>
+                    <c:forEach var="gh" items="${listGhct}">
+                        <c:set var="tongSoLuongSp"
+                               value="${tongSoLuongSp + gh.soLuong}"/>
+                    </c:forEach></div>
+
+                <c:if test="${tongSoLuongSp <= 20}">
+                    <button type="submit" style="background: black ; color: white ; border: black solid 2px"
+                            onclick="confirmAction(event)" class="btn btn-primary">Đặt Hàng
+                    </button>
+                </c:if>
+
+                <c:if test="${tongSoLuongSp > 20}">
+                    <span style="background: white ; color: red ; border: red solid 2px"
+                        class="btn btn-primary">Số lượng sản phẩm mua trong đơn hàng vượt quá cho phép
+                    </span>
+                </c:if>
+
             </div>
         </form>
+
     </div>
 </section>
 <footer>
@@ -489,7 +512,7 @@
 <script>
     function confirmAction(event) {
         // Hiển thị hộp thoại xác nhận
-        if (confirm("Bạn có chắc muốn đặt hàng?")) {
+        if (confirm("Bạn có chắc muốn đặt hàng ?")) {
             // Nếu người dùng chấp nhận, thực hiện chuyển hướng
             window.location.href = event.currentTarget.querySelector('button').getAttribute('submit');
         }

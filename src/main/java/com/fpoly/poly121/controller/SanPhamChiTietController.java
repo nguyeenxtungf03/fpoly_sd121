@@ -37,10 +37,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,94 +117,215 @@ public class SanPhamChiTietController {
 
         listTh = thuongHieuService.getList();
         model.addAttribute("listTh",listTh);
-
         model.addAttribute("idSp" , idSanPham);
+        model.addAttribute("idLsp" , idLsp);
+        model.addAttribute("idCl" , idCl);
+        model.addAttribute("idTh" , idTh);
         return "san_pham_chi_tiet/index";
     }
 
+    private boolean isImageFile(String fileName) {
+        String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp"};
+        for (String extension : validExtensions) {
+            if (fileName.toLowerCase().endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @PostMapping("add")
-    public String add( @RequestParam(required = false) MultipartFile file,@Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet, BindingResult bindingResult, Model model) {
-        model.addAttribute("listSp",listSp = sanPhamService.getAll());
-        model.addAttribute("listMs",listMs = mauSacService.getAll());
-        model.addAttribute("listLsp",listLsp =loaiSanPhamService.getAll());
-        model.addAttribute("listKt",listKt = kichThuocService.getList() );
-        model.addAttribute("listTh",listTh = thuongHieuService.getList());
-        model.addAttribute("listCl",listCl = chatLieuService.getList());
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("errors", bindingResult.getAllErrors());
-        } else {
-            Long idSanPham = sanPhamChiTiet.getIdSanPham().getId();
-            Long idLoaiSanPham = sanPhamChiTiet.getIdLoaiSanPham().getId();
-            Long idMauSac = sanPhamChiTiet.getIdMauSac().getId();
-            Long idKichThuoc = sanPhamChiTiet.getIdKichThuoc().getId();
-            Long idThuongHieu = sanPhamChiTiet.getIdThuongHieu().getId();
-            Integer idChatLieu = sanPhamChiTiet.getIdChatLieu().getId();
-            SanPhamChiTiet checkspct = sanPhamChiTietReponsitory.spCheck(idSanPham,idLoaiSanPham,idMauSac,idKichThuoc,idThuongHieu,idChatLieu);
-            if(checkspct != null){
-                model.addAttribute("error", "Sản phẩm đã tồn tại !");
+    public String handleFileUpload(@RequestParam(required = false)  MultipartFile file,
+                                   @Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+                                   BindingResult bindingResult, Model model) throws IOException {
+        try {
+            if (file == null ){
+                model.addAttribute("error", "Ảnh không để trống");
             }else {
-                sanPhamChiTietService.add(sanPhamChiTiet, file);
-                model.addAttribute("pass", "Thêm thành công ✓");
+                long fileSize = file.getSize();
+                if (bindingResult.hasErrors()) {
+                    model.addAttribute("error", bindingResult.getFieldError().getDefaultMessage());
+                } else {
+                    if (fileSize > 10 * 1024 * 1024) {
+                        model.addAttribute("error", "Dung lượng file vượt quá giới hạn (10MB).");
+                    }
+                    Long idSanPham = sanPhamChiTiet.getIdSanPham().getId();
+                    Long idLoaiSanPham = sanPhamChiTiet.getIdLoaiSanPham().getId();
+                    Long idMauSac = sanPhamChiTiet.getIdMauSac().getId();
+                    Long idKichThuoc = sanPhamChiTiet.getIdKichThuoc().getId();
+                    Long idThuongHieu = sanPhamChiTiet.getIdThuongHieu().getId();
+                    Integer idChatLieu = sanPhamChiTiet.getIdChatLieu().getId();
+
+                    SanPhamChiTiet checkspct = sanPhamChiTietReponsitory.spCheck(idSanPham, idLoaiSanPham, idMauSac, idKichThuoc, idThuongHieu, idChatLieu);
+                    if (checkspct != null) {
+                        model.addAttribute("error", "Sản phẩm đã tồn tại !");
+                    } else {
+                        try {
+                            String fileName = file.getOriginalFilename();
+                            if (isImageFile(fileName)) {
+                                // Thực hiện thêm sản phẩm chi tiết và file
+                                sanPhamChiTietService.add(sanPhamChiTiet, file);
+                                model.addAttribute("pass", "Thêm thành công ✓");
+
+
+
+                            } else {
+                                // Nếu không phải là ảnh, thông báo lỗi
+                                model.addAttribute("error", "Chỉ cho phép tải lên các tệp tin ảnh (JPEG, PNG, GIF)");
+                            }
+
+                        } catch (MaxUploadSizeExceededException e) {
+                            e.getMaxUploadSize();
+                        }
+                    }
+                    // danh sach sp
+                    listSpct = sanPhamChiTietReponsitory.listSpctAdd(idSanPham,idLoaiSanPham,idThuongHieu,idChatLieu);
+                    model.addAttribute("listSpct",listSpct);
+
+                    List<Object[]> listSpctMs = sanPhamChiTietReponsitory.listSpctMs(idSanPham,idLoaiSanPham,idThuongHieu,idChatLieu);
+                    List<SanPhamDto> sanPhamDtos = new ArrayList<>();
+                    for (Object[] result : listSpctMs) {
+                        SanPhamDto sanPhamDto = new SanPhamDto();
+                        sanPhamDto.setIdMauSac((MauSac) result [0]);
+                        sanPhamDtos.add(sanPhamDto);
+                    }
+                    model.addAttribute("listSpctMs",sanPhamDtos);
+                }
             }
 
+            model.addAttribute("listSp",listSp = sanPhamService.getAll());
+            model.addAttribute("listMs",listMs = mauSacService.getAll());
+            model.addAttribute("listLsp",listLsp =loaiSanPhamService.getAll());
+            model.addAttribute("listKt",listKt = kichThuocService.getList() );
+            model.addAttribute("listTh",listTh = thuongHieuService.getList());
+            model.addAttribute("listCl",listCl = chatLieuService.getList());
+
+            model.addAttribute("spct" ,sanPhamChiTiet);
+            model.addAttribute("file" ,file);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        model.addAttribute("spct" ,sanPhamChiTiet);
-        model.addAttribute("file" ,file);
+
         return "san_pham_chi_tiet/add";
     }
 
     @PostMapping("update/{id}")
     public String update(@PathVariable Long id, @Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet, BindingResult bindingResult, Model model) {
+
         SanPhamChiTiet sanPhamChiTiet2 = sanPhamChiTietService.detail(id);
         model.addAttribute("spct", sanPhamChiTiet2);
+
         model.addAttribute("listSp",listSp = sanPhamService.getAll());
         model.addAttribute("listMs",listMs = mauSacService.getAll());
         model.addAttribute("listLsp",listLsp =loaiSanPhamService.getAll());
         model.addAttribute("listKt",listKt = kichThuocService.getList() );
         model.addAttribute("listTh",listTh = thuongHieuService.getList());
         model.addAttribute("listCl",listCl = chatLieuService.getList());
+
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errors", bindingResult.getAllErrors());
+            model.addAttribute("errors", bindingResult.getFieldError().getDefaultMessage());
             model.addAttribute("spct",sanPhamChiTiet);
         } else {
-                model.addAttribute("pass", "Cập nhật thành công ✓ ");
-                sanPhamChiTietService.add2(sanPhamChiTiet);
+            Long ms = sanPhamChiTiet2.getIdMauSac().getId();
+            Long kt = sanPhamChiTiet2.getIdKichThuoc().getId();
+            Long th = sanPhamChiTiet2.getIdThuongHieu().getId();
+            Integer cl = sanPhamChiTiet2.getIdChatLieu().getId();
+            Long lsp = sanPhamChiTiet2.getIdLoaiSanPham().getId();
+            Long sp = sanPhamChiTiet2.getIdSanPham().getId();
+
+          if( ms == sanPhamChiTiet.getIdMauSac().getId() && kt == sanPhamChiTiet.getIdKichThuoc().getId() && th == sanPhamChiTiet.getIdThuongHieu().getId() &&
+              cl == sanPhamChiTiet.getIdChatLieu().getId() && lsp == sanPhamChiTiet.getIdLoaiSanPham().getId() && sp == sanPhamChiTiet.getIdSanPham().getId()) {
+              model.addAttribute("pass", "Cập nhật thành công ✓ ");
+              sanPhamChiTietService.add2(sanPhamChiTiet);
+          }else {
+              model.addAttribute("errors", "Cập nhật thất bại X ");
+          }
+
         }
         return "san_pham_chi_tiet/update";
     }
 
 
     @PostMapping("update2/{id}")
-    public String updateAnh(@RequestParam MultipartFile file,@PathVariable Long id, @Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet, Model model) {
+    public String updateAnh(@RequestParam(required = false ) MultipartFile file,@PathVariable Long id, @Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet, Model model,BindingResult bindingResult) {
+        SanPhamChiTiet sanPhamChiTiet2 = sanPhamChiTietService.detail(id);
+
         model.addAttribute("listSp", listSp = sanPhamService.getAll());
         model.addAttribute("listMs", listMs = mauSacService.getAll());
         model.addAttribute("listLsp", listLsp = loaiSanPhamService.getAll());
         model.addAttribute("listKt", listKt = kichThuocService.getList());
         model.addAttribute("listTh", listTh = thuongHieuService.getList());
         model.addAttribute("listCl", listCl = chatLieuService.getList());
-        model.addAttribute("pass", "Cập nhật ảnh thành công ✓ ");
-        SanPhamChiTiet sanPhamChiTiet1 = sanPhamChiTietService.detail(id);
-        model.addAttribute("spct", sanPhamChiTiet1);
-        sanPhamChiTietService.add(sanPhamChiTiet,file);
+        if (file == null) {
+            model.addAttribute("errors", "Ảnh không để trống");
+        } else {
+            long fileSize = file.getSize();
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("error", bindingResult.getFieldError().getDefaultMessage());
+                if (fileSize > 10 * 1024 * 1024) {
+                    model.addAttribute("error", "Dung lượng file vượt quá giới hạn (10MB).");
+                }
+            } else {
+                Long ms = sanPhamChiTiet2.getIdMauSac().getId();
+                Long kt = sanPhamChiTiet2.getIdKichThuoc().getId();
+                Long th = sanPhamChiTiet2.getIdThuongHieu().getId();
+                Integer cl = sanPhamChiTiet2.getIdChatLieu().getId();
+                Long lsp = sanPhamChiTiet2.getIdLoaiSanPham().getId();
+                Long sp = sanPhamChiTiet2.getIdSanPham().getId();
+
+                if( ms == sanPhamChiTiet.getIdMauSac().getId() && kt == sanPhamChiTiet.getIdKichThuoc().getId() && th == sanPhamChiTiet.getIdThuongHieu().getId() &&
+                        cl == sanPhamChiTiet.getIdChatLieu().getId() && lsp == sanPhamChiTiet.getIdLoaiSanPham().getId() && sp == sanPhamChiTiet.getIdSanPham().getId()) {
+                    model.addAttribute("pass", "Cập nhật ảnh thành công ✓ ");
+                    sanPhamChiTietService.add(sanPhamChiTiet, file);
+                }else {
+                    model.addAttribute("errors", "Cập nhật ảnh thất bại X ");
+                }
+            }
+        }
+        model.addAttribute("spct", sanPhamChiTiet2);
         return "san_pham_chi_tiet/update";
     }
 
 
     @GetMapping("delete/{id}")
-    public String delete(@RequestParam(defaultValue = "0") Integer page,@PathVariable Long id, Model model) {
+    public String delete(@RequestParam(defaultValue = "0") Integer page,@PathVariable Long id, Model model,@RequestParam(required = false ) Long idSanPham ,
+                         @RequestParam(required = false ) Long idLsp ,
+                         @RequestParam(required = false ) Long idTh ,
+                         @RequestParam(required = false ) Integer idCl ) {
+
         try {
             sanPhamChiTietService.delete(id);
-            model.addAttribute( "errors","Xoá thành công ") ;
+            model.addAttribute( "errors","Xoá thành công") ;
         }catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errors","Không được phép xóa sản phẩm này !");
         }
-        Page<SanPhamChiTiet> page1 = sanPhamChiTietService.getAll(page);
-        listSpct = page1.getContent();
+        listSpct = sanPhamChiTietReponsitory.findSanPhamChiTietByIdSanPham(idSanPham,idLsp,idTh,idCl);
         model.addAttribute("listSpct", listSpct);
         model.addAttribute("page", page);
-        model.addAttribute("page1", page1.getTotalPages());
-        return "redirect:/san-pham-chi-tiet/bo-loc?";
+        model.addAttribute("page1", 5);
+
+        listSp = sanPhamService.getAll();
+        model.addAttribute("listSp",listSp);
+
+        listCl = chatLieuService.getList();
+        model.addAttribute("listCl",listCl);
+
+        listKt = kichThuocService.getList();
+        model.addAttribute("listKt",listKt);
+
+        listLsp = loaiSanPhamService.getAll();
+        model.addAttribute("listLsp",listLsp);
+
+        listMs = mauSacService.getAll();
+        model.addAttribute("listMs",listMs);
+
+        listTh = thuongHieuService.getList();
+        model.addAttribute("listTh",listTh);
+
+        model.addAttribute("idSp" , idSanPham);
+        return "san_pham_chi_tiet/index";
     }
 
 

@@ -15,9 +15,9 @@
 </head>
 
 <body class="container">
-<form id="myForm6" action="/mau-sac/add" method="post">
+<form class="row g-3 needs-validation"class="row g-3 needs-validation" id="myForm6" action="/mau-sac/add" method="post">
     <span>Tên màu sắc </span><br>
-    <input style="height: 100%" type="text" required name="tenMauSac"><br>
+    <input class="form-control"class="form-control" style="height: 100%" type="text" required name="tenMauSac"><br>
     <span style="color: red">${errors}</span><br>
     <button class="btn btn-primary" type="submit">Thêm</button>
 </form>

@@ -2,6 +2,7 @@ package com.fpoly.poly121.repository;
 
 import com.fpoly.poly121.model.MauSac;
 
+import com.fpoly.poly121.model.SanPham;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,5 +22,8 @@ public interface MauSacReponsitory extends JpaRepository<MauSac,Long> {
 
     @Query("select spct.idMauSac from SanPhamChiTiet  spct where spct.idSanPham.id = :idSanPham  and spct.idKichThuoc.id = :idKichThuoc ")
     List<MauSac> findMauSacBySanPhamAndKichThuoc(Long idSanPham , Long idKichThuoc);
+
+    @Query("select sp from MauSac  sp where sp.tenMauSac = :tenMauSac")
+    MauSac tenMs(String  tenMauSac);
 
 }

@@ -5,6 +5,7 @@ import com.fpoly.poly121.repository.LoaiSanPhamRepository;
 import com.fpoly.poly121.service.impl.LoaiSanPhamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -17,6 +18,9 @@ import java.util.List;
 public class LoaiSanPhamController {
     @Autowired
     private LoaiSanPhamServiceImpl service;
+
+    @Autowired
+    private LoaiSanPhamRepository loaiSanPhamRepository;
 
 
     @GetMapping("hien-thi")
@@ -32,14 +36,15 @@ public class LoaiSanPhamController {
 
     @GetMapping("/add")
     public String add(ModelMap modelMap) {
-        //List<LoaiSanPham> value = Arrays.asList(LoaiSanPham.values());
         return "loai-san-pham/loai-san-pham";
     }
 
     @PostMapping("/add")
-    public String add(Model model, @ModelAttribute("themloaisp") LoaiSanPham loaiSanPham) {
-        model.addAttribute("loaisp", loaiSanPham);
-        service.add(loaiSanPham);
+    public String add(Model model, @ModelAttribute() LoaiSanPham loaiSanPham) {
+        LoaiSanPham lsp = loaiSanPhamRepository.tenLsp(loaiSanPham.getTenLoai());
+        if (lsp == null){
+            service.add(loaiSanPham);
+        }
         return "redirect:/loai-san-pham/hien-thi" ; }
 
     @GetMapping("detail/{id}")

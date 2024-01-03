@@ -2,6 +2,7 @@ package com.fpoly.poly121.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class SanPham {
     private Long id;
 
     @NotBlank
+    @NotNull
     @Column(name = "ten_san_pham")
     private String tenSanPham;
 

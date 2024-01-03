@@ -8,20 +8,19 @@ import com.fpoly.poly121.model.HoaDon;
 import com.fpoly.poly121.model.HoaDonChiTiet;
 import com.fpoly.poly121.model.KhachHang;
 import com.fpoly.poly121.model.SanPhamChiTiet;
-import com.fpoly.poly121.repository.HoaDonChiTietReponsitory;
-import com.fpoly.poly121.repository.HoaDonReponsitory;
-import com.fpoly.poly121.repository.KhachHangRepository;
-import com.fpoly.poly121.repository.SanPhamChiTietReponsitory;
+import com.fpoly.poly121.repository.*;
 import com.fpoly.poly121.service.HoaDonChiTietService;
 import com.fpoly.poly121.service.HoaDonService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +33,12 @@ public class HoaDonController {
     private HoaDonService hoaDonService;
     private List<HoaDon> listHd;
     private List<HoaDon> listHd1;
+
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+
+    @Autowired
+    private TaiKhoanRepository taiKhoanRepository;
 
     @Autowired
     private HoaDonChiTietService hoaDonChiTietService;
@@ -92,7 +97,7 @@ public class HoaDonController {
 
     @GetMapping("thong-ke")
     public String thongKe(Model model) {
-        // san pham da ban ko tinh tt huy va tt cxn
+        //san pham da ban trang thai ht
         listHdct = hoaDonReponsitory.sanPhamDaBan();
         model.addAttribute("listHdct", listHdct);
 
@@ -115,7 +120,7 @@ public class HoaDonController {
     public String searchTk(@RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateBd, @RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateKt, Model model) {
 
         //  doanh thu tt ht
-        listHd1 = hoaDonService.searchHD(dateBd, dateKt);
+        listHd1 = hoaDonReponsitory.doanhThuHtSearch(dateBd, dateKt);
         model.addAttribute("listHd1", listHd1);
 
         // hoa don da ban ko tinh tt huy
@@ -126,8 +131,8 @@ public class HoaDonController {
         Long countUniqueCustomers = hoaDonService.countUniqueCustomers(dateBd, dateKt);
         model.addAttribute("countUniqueCustomers", countUniqueCustomers);
 
-        //san pham da ban ko tinh tt huy va tt cxn
-        listHdct = hoaDonChiTietService.searchHDCT(dateBd, dateKt);
+        //san pham da ban trang thai ht
+        listHdct = hoaDonReponsitory.sanPhamDaBanSearch(dateBd, dateKt);
         model.addAttribute("listHdct", listHdct);
         return "thong_ke/hien_thi";
 
@@ -150,12 +155,23 @@ public class HoaDonController {
     }
 
     @GetMapping("trang-thai")
-    public String trangThai(@RequestParam(required = false) Long trangThai, Model model){
-       listHd =  hoaDonReponsitory.trangThaiHoaDon(trangThai);
+    public String trangThai(@RequestParam(required = false) Long trangThai,@RequestParam(required = false) Long loaiHoaDon , Model model){
+       listHd =  hoaDonReponsitory.trangThaiHoaDon(loaiHoaDon,trangThai );
+        model.addAttribute("loaiHoaDon",loaiHoaDon);
        model.addAttribute("listHd",listHd);
        model.addAttribute("trangThai" ,trangThai);
        return "hoa_don/hien_thi";
     }
+
+    @GetMapping("loai-hoa-don")
+    public String loaiHoaDonOnline(@RequestParam(required = false) Long trangThai,@RequestParam(required = false) Long loaiHoaDon , Model model){
+        listHd =  hoaDonReponsitory.trangThaiHoaDon(loaiHoaDon,trangThai );
+        model.addAttribute("loaiHoaDon",loaiHoaDon);
+        model.addAttribute("listHd",listHd);
+        model.addAttribute("trangThai" ,trangThai);
+        return "hoa_don/hien_thi";
+    }
+
 
     @PostMapping("trang-thai-don-hang")
     public String trangThaiHoaDon(@RequestParam(required = false) Long trangThai,
@@ -177,11 +193,14 @@ public class HoaDonController {
 
     @Transactional
     @PostMapping("trang-thai-don-hang-khach-hang")
-    public String trangThaiHoaDonKhachHang(@RequestParam(required = false) String trangThai , @RequestParam(required = false) Long idHoaDon , Model model) {
+    public String trangThaiHoaDonKhachHang(@RequestParam(required = false) String trangThai, @RequestParam(required = false) Long idHoaDon, Model model) {
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
+
         try {
             try {
                 long trangThaiHuy = Long.parseLong(trangThai);
-                if (trangThaiHuy == 7) {
+                Long trangThaiHd = hoaDonReponsitory.findTrangThaibyIdHd(idHoaDon);
+                if (trangThaiHuy == 7 && trangThaiHd == 1 ) {
                     hoaDonReponsitory.updateTrangThai(trangThaiHuy, idHoaDon);
                     hoaDonReponsitory.updateNgay(new Date(), idHoaDon);
                     // san pham trong gio hang
@@ -195,13 +214,20 @@ public class HoaDonController {
                 if (trangThaiHuy != 7) {
                     model.addAttribute("Lỗi hủy đơn hàng ");
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }catch (Exception e){
+
+            List<HoaDonChiTiet> listHdctSp = sanPhamChiTietReponsitory.findHdctByidHd(idHoaDon);
+            model.addAttribute("listHdct", listHdctSp);
+
+            HoaDon hoaDon = hoaDonService.detail(idHoaDon);
+            model.addAttribute("hd", hoaDon);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/trang-chu";
+        return "hoa_don/hoa_don_chi_tiet_nguoi_dung";
+
     }
 
 }

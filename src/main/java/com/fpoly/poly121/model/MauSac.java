@@ -2,6 +2,7 @@ package com.fpoly.poly121.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class MauSac {
     private Long id;
 
     @NotBlank
+    @NotNull
     @Column(name = "ten_mau")
     private String tenMauSac;
 }

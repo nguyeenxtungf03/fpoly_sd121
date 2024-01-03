@@ -78,48 +78,79 @@
         <H1 style="text-align: center ; color: black;font-weight: 600">Danh sách hóa đơn </H1>
         <ul class="d-flex" style="list-style: none; gap:4px ; justify-content: center">
             <li>
+                <form method="get" action="/hoa-don/loai-hoa-don">
+                    <input type="hidden" name="loaiHoaDon" value="">
+                    <input type="hidden" name="trangThai" value="${trangThai}">
+                    <button  ${loaiHoaDon == null ? 'style="background: #adb5bd "' :''} class="form-control" type="submit">Tất cả</button>
+                </form>
+            </li>
+            <li>
+                <form method="get" action="/hoa-don/loai-hoa-don">
+                    <input type="hidden" name="loaiHoaDon" value="1">
+                    <input type="hidden" name="trangThai" value="${trangThai}">
+                    <button  ${loaiHoaDon == 1 ? 'style="background: #008080"' :''} class="form-control" type="submit">Mua hàng Online</button>
+                </form>
+            </li>
+            <li>
+                <form method="get" action="/hoa-don/loai-hoa-don">
+                    <input type="hidden" name="loaiHoaDon" value="2">
+                    <input type="hidden" name="trangThai" value="${trangThai}">
+                    <button ${loaiHoaDon == 2 ? 'style="background: #8B475D"' :''} class="form-control" type="submit">Mua hàng tại quầy </button>
+                </form>
+            </li>
+        </ul>
+
+        <ul class="d-flex" style="list-style: none; gap:4px ; justify-content: center">
+            <li>
                 <form method="get" action="/hoa-don/hien-thi">
                     <button  ${trangThai == null ? 'style="background: #adb5bd"' :''} class="form-control" type="submit">Tất cả</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="1">
                     <button ${trangThai == 1 ? 'style="background: #adb5bd"' :''} class="form-control" type="submit">Chờ xác nhận</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="2">
                     <button ${trangThai == 2 ? 'style="background: #adb5bd"' :''}   class="form-control" type="submit">Xác nhận</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="3">
                     <button ${trangThai == 3 ? 'style="background: #adb5bd"' :''}  class="form-control" type="submit">Chờ vận chuyển</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="4">
                     <button ${trangThai == 4 ? 'style="background: #adb5bd"' :''}  class="form-control" type="submit">Vận chuyển</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="5">
                     <button ${trangThai == 5 ? 'style="background: #adb5bd"' :''}  class="form-control" type="submit">Thanh toán</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="6">
                     <button ${trangThai == 6 ? 'style="background: #34ce57"' :''}  class="form-control" type="submit">Hoàn thành</button>
                 </form>
             </li>
             <li>
                 <form method="get" action="/hoa-don/trang-thai">
+                    <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="7">
                     <button ${trangThai == 7 ? 'style="background: red"' :''}  class="form-control" type="submit">Huỷ</button>
                 </form>

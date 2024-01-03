@@ -3,6 +3,7 @@ package com.fpoly.poly121.controller;
 
 
 import com.fpoly.poly121.model.MauSac;
+import com.fpoly.poly121.repository.MauSacReponsitory;
 import com.fpoly.poly121.service.MauSacService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class MauSacController {
     private MauSacService mauSacService;
     List<MauSac> listMs;
 
+    @Autowired
+    private MauSacReponsitory mauSacReponsitory;
+
     @GetMapping("hien-thi")
     public String getAll(@RequestParam(defaultValue = "0") Integer page, Model model) {
         Page<MauSac> page1 = mauSacService.getPage(page);
@@ -43,7 +47,10 @@ public class MauSacController {
             model.addAttribute("errors", "Khong de trong !");
             return "mau_sac/hien-thi";
         } else {
-            mauSacService.add(mauSac);
+            MauSac ms = mauSacReponsitory.tenMs(mauSac.getTenMauSac());
+            if (ms == null){
+                mauSacService.add(mauSac);
+            }
             return "redirect:/mau-sac/hien-thi";
         }
     }

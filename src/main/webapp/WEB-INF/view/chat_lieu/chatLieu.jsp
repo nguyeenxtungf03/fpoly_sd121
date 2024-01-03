@@ -15,9 +15,9 @@
 </head>
 
 <body class="container">
-<form id="myForm3" action="/chat-lieu/add" method="post">
+<form class="row g-3 needs-validation" id="myForm3" action="/chat-lieu/add" method="post">
     <span>Tên chất liệu </span><br>
-    <input style="height: 100%" type="text" required name="tenChatLieu"><br>
+    <input class="form-control" style="height: 100%" type="text" required name="tenChatLieu"><br>
     <span style="color: red">${errors}</span><br>
     <button  class="btn btn-primary" type="submit">Thêm</button>
 </form>

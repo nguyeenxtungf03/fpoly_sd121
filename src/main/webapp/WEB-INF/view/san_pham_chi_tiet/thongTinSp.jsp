@@ -258,11 +258,11 @@
                             Hàng
                         </button>
                         </c:if>
-                        <c:if test="${spct.soLuong <= 0}">
-                            <button class="btn btn-outline-success" disabled style="color: red ;border: 1px solid red"  type="button">Sản phẩm đã bán hết
-                            </button>
-                        </c:if>
                     </form>
+                    <c:if test="${spct.soLuong <= 0}">
+                            <button disabled class="btn" style="color: red ;border: 1px solid red" >Sản phẩm đã bán hết
+                            </button>
+                    </c:if>
                     <br>
                 </div>
             </div>

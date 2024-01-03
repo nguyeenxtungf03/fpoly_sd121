@@ -53,45 +53,6 @@ public class GioHangChiTietController {
     private GioHangRepository gioHangRepository;
 
 
-    @Autowired
-    private SanPhamChiTietReponsitory sanPhamChiTietReponsitory;
-
-
-    public static class SecurityAttributesUtil {
-
-        public static void setSecurityAttributes(Model model, TaiKhoanRepository taiKhoanRepository, KhachHangRepository khachHangRepository) {
-            model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-            model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-            model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-            model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-            model.addAttribute("username", SecurityUtil.getUsernameLogin());
-            model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
-            Date newDate = new Date();
-            model.addAttribute("newDate", newDate);
-        }
-    }
-
-    public static class IPUtil {
-
-        public static List<GioHangChiTietDto> getShoppingCartDetails(GioHangChiTietService gioHangChiTietService) {
-            try {
-                // Lấy đối tượng InetAddress đại diện cho máy tính hiện tại
-                InetAddress localhost = InetAddress.getLocalHost();
-                // Lấy địa chỉ IP của máy tính
-                String ipAddress = localhost.getHostAddress();
-
-                // Gọi service để lấy danh sách chi tiết giỏ hàng
-                return gioHangChiTietService.getGioHangChiTiet(ipAddress);
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-                // Handle exception or log the error
-                return Collections.emptyList(); // Return an empty list in case of an exception
-            }
-        }
-    }
-
-
     @GetMapping("hien-thi")
     public String getAll(Model model) {
         // lay thong tin tk
@@ -99,23 +60,12 @@ public class GioHangChiTietController {
 
         String tk1 = SecurityUtil.getUsernameLogin();
 
+        List<GioHangChiTietDto> listGhctDtoLay = null;
+
         if (tk1.isEmpty()) {
             List<GioHangChiTietDto> listGhctDto = IPUtil.getShoppingCartDetails(gioHangChiTietService);
             model.addAttribute("listGhct", listGhctDto);
-
-            for (GioHangChiTietDto gioHangChiTietDto : listGhctDto) {
-                SanPhamChiTiet spct = gioHangChiTietDto.getIdSanPhamChiTiet();
-                String tenSp = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
-                Long soLuongSpCon = gioHangChiTietDto.getIdSanPhamChiTiet().getSoLuong();
-                Long soLuongSpGioHang = gioHangChiTietDto.getSoLuong();
-
-                if (soLuongSpCon < soLuongSpGioHang && soLuongSpCon > 0) {
-                    model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) chỉ còn " + soLuongSpCon);
-                }
-                if (soLuongSpCon < 1) {
-                    model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) đã bán hết ! ");
-                }
-            }
+            listGhctDtoLay = listGhctDto;
         } else {
             // lay ten tk
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,19 +73,20 @@ public class GioHangChiTietController {
 
             List<GioHangChiTietDto> listGhctDto = gioHangChiTietService.getGioHangChiTiet(username);
             model.addAttribute("listGhct", listGhctDto);
+            listGhctDtoLay = listGhctDto;
+            }
 
-            for (GioHangChiTietDto gioHangChiTietDto : listGhctDto) {
-                SanPhamChiTiet spct = gioHangChiTietDto.getIdSanPhamChiTiet();
-                String tenSp = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
-                Long soLuongSpCon = gioHangChiTietDto.getIdSanPhamChiTiet().getSoLuong();
-                Long soLuongSpGioHang = gioHangChiTietDto.getSoLuong();
+        for (GioHangChiTietDto gioHangChiTietDto : listGhctDtoLay) {
+            SanPhamChiTiet spct = gioHangChiTietDto.getIdSanPhamChiTiet();
+            String tenSp = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
+            Long soLuongSpCon = gioHangChiTietDto.getIdSanPhamChiTiet().getSoLuong();
+            Long soLuongSpGioHang = gioHangChiTietDto.getSoLuong();
 
-                if (soLuongSpCon < soLuongSpGioHang && soLuongSpCon > 0) {
-                    model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) chỉ còn " + soLuongSpCon);
-                }
-                if (soLuongSpCon < 1) {
-                    model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) đã bán hết ! ");
-                }
+            if (soLuongSpCon < soLuongSpGioHang && soLuongSpCon > 0) {
+                model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) chỉ còn " + soLuongSpCon);
+            }
+            if (soLuongSpCon < 1) {
+                model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) đã bán hết ! ");
             }
         }
 
@@ -333,6 +284,7 @@ public class GioHangChiTietController {
             model.addAttribute("sdtNguoiNhan", sdtNguoiNhan);
             model.addAttribute("diaChiNhan", diaChiNhan);
             model.addAttribute("diaChi", diaChi);
+
             List<GioHangChiTietDto> listGhctDto = null;
 
 
@@ -486,6 +438,7 @@ public class GioHangChiTietController {
 
             // thong bao khi xay ra loi trong qua trinh
             if (hasError) { // khi xay ra loi
+                hoaDonReponsitory.delete(hoaDon);
                 model.addAttribute("listGhct", listGhctDto);
                 model.addAttribute("errorssss", "Số lượng sản phẩm trong kho không đủ !");
             } else { // khi khong xay ra loi nao
@@ -514,11 +467,13 @@ public class GioHangChiTietController {
                 hoaDon.setThanhTien(tongTien);
                 hoaDon.setLoaiHoaDon(1L);
                 if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null || diaChi == null) {
+                    hoaDonReponsitory.delete(hoaDon);
                     model.addAttribute("errors", "Vui lòng điền đầy đủ thông tin để tiếp tục đặt hàng !");
                     model.addAttribute("listGhct", listGhctDto);
                     return "gio_hang/hien_thi";
                 } else {
                     if (tenNguoiNhan.isBlank() || hoNguoiNhan.isBlank() || diaChiNhan.isBlank() || sdtNguoiNhan.isBlank() || tinh.isBlank() || huyen.isBlank() || phuong.isBlank() || diaChi.isBlank()) {
+                        hoaDonReponsitory.delete(hoaDon);
                         model.addAttribute("notBlank", "Chú ý : Các ô đánh dấu ( * ) không được để trống !");
                     } else {
                         // Luu hoa don

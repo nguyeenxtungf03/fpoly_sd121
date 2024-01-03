@@ -15,9 +15,9 @@
 </head>
 
 <body class="container">
-<form id="myForm4" action="/kich-thuoc/add" method="post">
+<form  class="row g-3 needs-validation" id="myForm4" action="/kich-thuoc/add" method="post">
     <span>Tên kích thước </span><br>
-    <input style="height: 100%" type="text" required name="tenKichThuoc"><br>
+    <input class="form-control" style="height: 100%" type="text" required name="tenKichThuoc"><br>
     <span style="color: red">${errors}</span><br>
     <button class="btn btn-primary" type="submit">Thêm</button>
 </form>

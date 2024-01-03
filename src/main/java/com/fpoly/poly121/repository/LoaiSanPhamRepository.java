@@ -1,6 +1,7 @@
 package com.fpoly.poly121.repository;
 
 import com.fpoly.poly121.model.LoaiSanPham;
+import com.fpoly.poly121.model.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,7 +17,9 @@ public interface LoaiSanPhamRepository extends JpaRepository<LoaiSanPham,Long> {
     @Query("SELECT c from LoaiSanPham c where c.tenLoai like %:tenLoai%")
     List<LoaiSanPham> search(String tenLoai);
 
-
     LoaiSanPham findByTenLoai(String tenLoai);
+
+    @Query("select sp from LoaiSanPham  sp where sp.tenLoai = :tenLoai")
+    LoaiSanPham tenLsp(String  tenLoai);
 
 }

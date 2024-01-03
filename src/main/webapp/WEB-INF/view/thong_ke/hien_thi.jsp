@@ -182,7 +182,7 @@
     </div>
     <div class="col-xl-3 col-md-6">
         <div class="card bg-danger text-bg-light mb-4">
-            <div class="card-body"><i class="bi bi-people-fill"></i> Khách hàng</div>
+            <div class="card-body"><i class="bi bi-people-fill"></i> Khách hàng đã mua</div>
             <div class="card-footer d-flex align-items-center justify-content-between">
                 <div class="small text-white stretched-link">
                     Số khách hàng : <span style="font-weight: 400">${countUniqueCustomers}</span><br>
@@ -292,8 +292,8 @@
                 yAxes: [{
                     ticks: {
                         min: 0,
-                        max:  ${ totalQuantity1 + totalQuantity2 + totalQuantity3 + totalQuantity4 +totalQuantity5 +totalQuantity6 +totalQuantity7 + totalQuantity8 +totalQuantity9 +totalQuantity10 +totalQuantity11 +totalQuantity12 },
-                        maxTicksLimit: 8,
+                        max: ${ totalQuantity1 + totalQuantity2 + totalQuantity3 + totalQuantity4 +totalQuantity5 +totalQuantity6 +totalQuantity7 + totalQuantity8 +totalQuantity9 +totalQuantity10 +totalQuantity11 +totalQuantity12 + 120000},
+                        maxTicksLimit: 12,
                         callback: function (value, index, values) {
                             return number_format(value) + ' ₫';
                         }
