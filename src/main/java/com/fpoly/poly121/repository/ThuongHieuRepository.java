@@ -1,6 +1,7 @@
 package com.fpoly.poly121.repository;
 
 import com.fpoly.poly121.model.ChatLieu;
+import com.fpoly.poly121.model.SanPham;
 import com.fpoly.poly121.model.ThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,9 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
     List<ThuongHieu> search(String tenThuongHieu );
 
     ThuongHieu findByTenThuongHieu(String tenThuongHieu);
+
+    @Query("select sp from ThuongHieu  sp where sp.tenThuongHieu = :tenThuongHieu")
+    ThuongHieu tenTh(String  tenThuongHieu);
 
 }
 

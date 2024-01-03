@@ -1,11 +1,13 @@
 package com.fpoly.poly121.controller;
 
 import com.fpoly.poly121.model.ThuongHieu;
+import com.fpoly.poly121.repository.ThuongHieuRepository;
 import com.fpoly.poly121.service.ChatLieuService;
 import com.fpoly.poly121.service.ThuongHieuService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,9 @@ public class ThuongHieuController {
     @Autowired
     private ThuongHieuService thuongHieuService;
     List<ThuongHieu> listTh;
+
+    @Autowired
+    private ThuongHieuRepository thuongHieuRepository;
 
     @GetMapping("hien-thi")
     public String getAll(@RequestParam(defaultValue = "0") Integer page, Model model) {
@@ -46,8 +51,12 @@ public class ThuongHieuController {
             model.addAttribute("page1", page1.getTotalPages());
             model.addAttribute("errors" ,"Không để trống");
             return "thuong_hieu/hien-thi";
+        }else {
+            ThuongHieu th = thuongHieuRepository.tenTh(thuongHieu.getTenThuongHieu());
+            if (th == null){
+                thuongHieuService.add(thuongHieu);
+            }
         }
-        thuongHieuService.add(thuongHieu);
         return "redirect:/thuong-hieu/hien-thi";
     }
 

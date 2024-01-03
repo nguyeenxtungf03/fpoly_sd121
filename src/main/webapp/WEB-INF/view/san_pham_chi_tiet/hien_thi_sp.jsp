@@ -175,13 +175,13 @@
         background-color: #fff;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 1px 1px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .sanPham {
         font-size: 14px;
         background-color: #ffffff;
-        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         padding: 30px;
         border-radius: 10px;
     }

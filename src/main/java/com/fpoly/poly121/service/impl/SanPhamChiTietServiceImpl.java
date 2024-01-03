@@ -1,5 +1,6 @@
 package com.fpoly.poly121.service.impl;
 
+import com.fpoly.poly121.dto.request.HoaDonChiTietDto;
 import com.fpoly.poly121.dto.request.SanPhamDto;
 import com.fpoly.poly121.dto.request.TopSpDto;
 import com.fpoly.poly121.model.*;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,7 +45,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
 
         try {
             String fileName = file.getOriginalFilename();
-            String absolutePath = FileUtils.getFile("../../../../DA/src/main/webapp/", relativePath).getCanonicalPath();
+            String absolutePath = FileUtils.getFile("../../../../DATN/fpoly_sd121/src/main/webapp/", relativePath).getCanonicalPath();
             File uploadDir = new File(absolutePath);
             FileUtils.forceMkdir(uploadDir);
             uploadDir.setWritable(true);
@@ -103,4 +105,5 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
             return dto;
         });
     }
+
 }

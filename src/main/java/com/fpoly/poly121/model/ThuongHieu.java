@@ -2,6 +2,7 @@ package com.fpoly.poly121.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class ThuongHieu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Không để trống ")
+    @NotBlank
+    @NotNull
     @Column(name = "ten_thuong_hieu")
     private String tenThuongHieu;
 

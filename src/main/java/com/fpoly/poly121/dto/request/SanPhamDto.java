@@ -10,11 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SanPhamDto {
-
     private SanPham idSanPham;
     private LoaiSanPham idLoaiSanPham;
     private ThuongHieu idThuongHieu;
     private ChatLieu idChatLieu;
     private Long soLuong;
     private Long trangThai;
+    private MauSac idMauSac;
 }

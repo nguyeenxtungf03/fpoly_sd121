@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-md-5">
                     <label>Sản phẩm</label>
-                    <select id="idSanPham" name="idSanPham" class="form-control">
+                    <select  id="idSanPham" name="idSanPham" class="form-control">
                         <option value="">--Tất cả--</option>
                         <c:forEach items="${listSp}" var="sp">
                             <option  ${sp == idSanPham or sp.id == idSp ? 'selected' : ''}
@@ -44,7 +44,7 @@
                     <select id="idMauSac" name="idMauSac" class="form-control">
                         <option value="">--Tất cả--</option>
                         <c:forEach items="${listMs}" var="ms">
-                            <option ${idMauSac == ms ? 'selected' : ''} value="${ms.id}">${ms.tenMauSac}</option>
+                            <option ${idMauSac == ms  ? 'selected' : ''} value="${ms.id}">${ms.tenMauSac}</option>
                         </c:forEach> </select>
                 </div>
                 <div class="col-md-2">
@@ -60,7 +60,7 @@
                     <select id="idLoaiSanPham" name="idLoaiSanPham" class="form-control">
                         <option value="">--Tất cả--</option>
                         <c:forEach items="${listLsp}" var="sp">
-                            <option ${idLoaiSanPham == sp ? 'selected' : ''} value="${sp.id}">${sp.tenLoai}</option>
+                            <option ${idLoaiSanPham == sp or sp.id == idLsp ? 'selected' : ''} value="${sp.id}">${sp.tenLoai}</option>
                         </c:forEach> </select>
                 </div>
 
@@ -71,7 +71,7 @@
                     <select id="idThuongHieu" name="idThuongHieu" class="form-control">
                         <option value="">--Tất cả--</option>
                         <c:forEach items="${listTh}" var="sp">
-                            <option ${idThuongHieu == sp ? 'selected' : ''}
+                            <option ${idThuongHieu == sp or sp.id == idTh ? 'selected' : ''}
                                     value="${sp.id}">${sp.tenThuongHieu}</option>
                         </c:forEach> </select>
                 </div>
@@ -80,7 +80,7 @@
                     <select id="idChatLieu" name="idChatLieu" class="form-control">
                         <option value="">--Tất cả--</option>
                         <c:forEach items="${listCl}" var="sp">
-                            <option ${idChatLieu == sp ? 'selected' : ''} value="${sp.id}">${sp.tenChatLieu}</option>
+                            <option ${idChatLieu == sp or sp.id == idCl ? 'selected' : ''} value="${sp.id}">${sp.tenChatLieu}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -108,13 +108,13 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            <a class="btn btn-secondary ml-2" href="/san-pham-chi-tiet/bo-loc?idSanPham=${idSanPham.id}">Làm mới bộ lọc</a>
+            <a class="btn btn-secondary ml-2" href="/san-pham-chi-tiet/bo-loc?idSanPham=${idSanPham.id}&idLoaiSanPham=${idLoaiSanPham.id}&idThuongHieu=${idThuongHieu.id}&idChatLieu=${idChatLieu.id}">Làm lại bộ
+                lọc</a>
         </form>
 
 
     </div>
     <div class="danhSach">
-
         <H1 style="text-align: center ; color: black ; font-weight: 600">Sản phẩm chi tiết </H1>
         <table class="table table-hover">
             <tdead style="color: white">
@@ -159,10 +159,16 @@
 
                 <td scope="row"
                     style="display: flex;flex-direction: column ; gap: 1rem ; align-items: center ">
-                    <button class="btn btn-outline-success"><a onclick="confirmAction(event)" class="navbar-brand"
-                                                               href="/san-pham-chi-tiet/delete/${spct.id}"> <i
-                            class="fas fa-trash"></i></a>
-                    </button>
+                    <form action="/san-pham-chi-tiet/delete/${spct.id}" method="get">
+                        <input type="hidden" name="idSanPham" value="${spct.idSanPham.id}">
+                        <input type="hidden" name="idLsp" value="${spct.idLoaiSanPham.id}">
+                        <input type="hidden" name="idTh" value="${spct.idThuongHieu.id}">
+                        <input type="hidden" name="idCl" value="${spct.idChatLieu.id}">
+                        <button class="btn btn-outline-success" type="submit" onclick="confirmAction(event)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+
                     <button class="btn btn-outline-success"><a class="navbar-brand"
                                                                href="/san-pham-chi-tiet/detail/${spct.id}">
                         <i class="bi bi-pencil-square"></i></a>
@@ -178,14 +184,28 @@
 <script>
     function confirmAction(event) {
         // Hiển thị hộp thoại xác nhận
-        if (confirm("Bạn có chắc muốn xóa không?")) {
+        if (confirm("Bạn có chắc chắn muốn xoá sản phẩm này ?")) {
             // Nếu người dùng chấp nhận, thực hiện chuyển hướng
-            window.location.href = event.currentTarget.querySelector('a').getAttribute('href');
+            window.location.href = event.currentTarget.querySelector('button').getAttribute('submit');
         }
         // Ngăn chặn sự kiện mặc định (nhảy trang)
         event.preventDefault();
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Kiểm tra giá trị và hiển thị alert nếu giá trị là null
+        if (`${errors}` === "Xoá thành công") {
+            alert("Xoá thành công");
+        }
+        if (`${errors}` === "Không được phép xóa sản phẩm này !") {
+            alert("Không được phép xóa sản phẩm này !");
+        }
+
+    });
+
+
 </script>
+
 
 <style>
     .btn {
@@ -211,14 +231,14 @@
         background-color: #fff;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 1px 1px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .danhSach {
         margin-top: 10px;
         font-size: 14px;
         background-color: #ffffff;
-        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         padding: 10px;
         border-radius: 10px;
     }

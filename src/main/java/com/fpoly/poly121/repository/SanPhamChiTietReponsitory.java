@@ -71,12 +71,31 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
             "group by spct.idSanPham , spct.idLoaiSanPham , spct.idThuongHieu , spct.idChatLieu ,spct.trangThai")
     Page<Object[]> listSp(Pageable pageable);
 
+    @Query("select spct\n" +
+            "from SanPhamChiTiet spct \n" +
+            "where spct.idSanPham.id = :idSanPham and spct.idLoaiSanPham.id = :idLoaiSanPham and spct.idThuongHieu.id = :idThuongHieu and spct.idChatLieu.id = :idChatLieu")
+    List<SanPhamChiTiet> listSpctAdd(Long idSanPham , Long idLoaiSanPham , Long idThuongHieu  ,Integer idChatLieu);
+
+
+    @Query("SELECT spct.idMauSac, spct.idSanPham.id, spct.idLoaiSanPham.id, spct.idThuongHieu.id, spct.idChatLieu.id " +
+            "FROM SanPhamChiTiet spct " +
+            "WHERE spct.idSanPham.id = :idSanPham AND spct.idLoaiSanPham.id = :idLoaiSanPham " +
+            "AND spct.idThuongHieu.id = :idThuongHieu AND spct.idChatLieu.id = :idChatLieu " +
+            "GROUP BY spct.idMauSac, spct.idSanPham.id, spct.idLoaiSanPham.id, spct.idThuongHieu.id, spct.idChatLieu.id")
+    List<Object[]> listSpctMs(Long idSanPham, Long idLoaiSanPham, Long idThuongHieu, Integer idChatLieu);
+
 
 
     @Query("select ct  \n" +
             "from SanPhamChiTiet ct\n" +
             "where ct.idSanPham.id = :idSanPham and ct.idLoaiSanPham.id = :idLoaiSanPham and ct.idMauSac.id = :idMauSac and ct.idKichThuoc.id = :idKichThuoc and ct.idThuongHieu.id = :idThuongHieu and ct.idChatLieu.id = :idChatLieu  ")
     SanPhamChiTiet spCheck(Long idSanPham, Long idLoaiSanPham, Long idMauSac, Long idKichThuoc, Long idThuongHieu, Integer idChatLieu );
+
+
+    @Query("select ct  \n" +
+            "from SanPhamChiTiet ct\n" +
+            "where ct.idSanPham.id = :id ")
+    SanPhamChiTiet spCheckId(Long id );
 
 
     @Query("SELECT ct " +

@@ -1,6 +1,7 @@
 package com.fpoly.poly121.controller;
 
 import com.fpoly.poly121.model.ChatLieu;
+import com.fpoly.poly121.repository.ChatLieuRepository;
 import com.fpoly.poly121.service.ChatLieuService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class ChatLieuController {
     private ChatLieuService chatLieuService;
     List<ChatLieu> listCl;
 
+    @Autowired
+    private ChatLieuRepository chatLieuRepository;
+
     @GetMapping("index")
     public String getAll(@RequestParam(defaultValue = "0") Integer page, Model model) {
         Page<ChatLieu> page1 = chatLieuService.getAll(page);
@@ -39,9 +43,13 @@ public class ChatLieuController {
     public String add(@Validated @ModelAttribute ChatLieu chatLieu, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "chat_lieu/add";
+        } else {
+            ChatLieu cl = chatLieuRepository.tenCl(chatLieu.getTenChatLieu());
+            if (cl == null) {
+                chatLieuService.add(chatLieu);
+            }
+            return "redirect:/chat-lieu/index";
         }
-        chatLieuService.add(chatLieu);
-        return "redirect:/chat-lieu/index";
     }
 
     @PostMapping("update/{id}")
