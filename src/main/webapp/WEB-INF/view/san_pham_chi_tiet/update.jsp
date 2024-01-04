@@ -97,7 +97,7 @@
                         <input name="giaBan" required value="${spct.giaBan}" type="number" id="validationCustom03" class="form-control"
                                placeholder="Giá bán " min="1">
                         <div class="invalid-feedback">
-                            Không để trống giá bán và giá bán phải > 1
+                            Không để trống giá bán và giá bán phải > 0
                         </div>
                     </div>
 
@@ -108,9 +108,9 @@
                     <label for="minPrice">Số lượng</label>
                     <div class="input-group">
                         <input name="soLuong" required value="${spct.soLuong}" type="number" class="form-control" id="minPrice"
-                               placeholder="Số lượng" pattern="[0-9]+" title="Chỉ chấp nhận số" min="1">
+                               placeholder="Số lượng" pattern="[0-9]+" title="Chỉ chấp nhận số" min="0">
                         <div class="invalid-feedback">
-                            Không để trống số lượng và số lượng phải > 1
+                            Không để trống số lượng và số lượng phải >= 0
                         </div>
                     </div>
                 </div>

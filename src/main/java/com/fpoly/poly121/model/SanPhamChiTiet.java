@@ -79,7 +79,7 @@ public class SanPhamChiTiet {
     private Long giaBan;
 
     @NotNull(message = "Không để trống số lượng")
-    @Min(value = 1 ,message = "Số lượng phải > 0  ")
+    @Min(value = 0 ,message = "Số lượng phải >= 0  ")
     @Column(name = "so_luong")
     private Long soLuong;
 

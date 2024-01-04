@@ -161,7 +161,7 @@
                                id="minPrice"
                                placeholder="Giá bán " min="1">
                         <div class="invalid-feedback">
-                            Không để trống giá bán và giá bán phải > 1
+                            Không để trống giá bán và giá bán phải > 0
                         </div>
                     </div>
                 </div>
@@ -170,9 +170,9 @@
                 <div class="form-group">
                     <label for="minPrice">Số lượng</label>
                     <div class="input-group">
-                        <input name="soLuong" required value="${spct.soLuong}" type="number" class="form-control" placeholder="Số lượng" min="1" />
+                        <input name="soLuong" required value="${spct.soLuong}" type="number" class="form-control" placeholder="Số lượng" min="0" />
                         <div class="invalid-feedback">
-                            Không để trống số lượng và số lượng phải > 1
+                            Không để trống số lượng và số lượng phải >= 0
                         </div>
                     </div>
                 </div>
