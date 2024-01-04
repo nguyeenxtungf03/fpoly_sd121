@@ -215,7 +215,7 @@
                 <th scope="row"><a href="/trang-chu/chi-tiet/${hdct.idSanPhamChiTiet.id}"><img
                         style=" max-width: 50px;max-height: 50px; object-fit: cover;"
                         src="/assets/images/imgSp/${hdct.idSanPhamChiTiet.anhSanPham}"></a></th>
-                <td>${hdct.idSanPhamChiTiet.idSanPham.tenSanPham}</td>
+                <td>${hdct.idSanPhamChiTiet.idSanPham.tenSanPham} <small style="color: #565e64">(  ${hdct.idSanPhamChiTiet.idMauSac.tenMauSac} - ${hdct.idSanPhamChiTiet.idKichThuoc.tenKichThuoc} )</small></td>
                 <td>${hdct.soLuong}</td>
                 <td>
                     <c:if test="${hdct.donGia < hdct.giaGoc}">

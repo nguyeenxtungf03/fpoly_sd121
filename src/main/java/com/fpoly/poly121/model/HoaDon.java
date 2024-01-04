@@ -2,6 +2,7 @@ package com.fpoly.poly121.model;
 
 import com.fpoly.poly121.security.dto.TaiKhoan;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

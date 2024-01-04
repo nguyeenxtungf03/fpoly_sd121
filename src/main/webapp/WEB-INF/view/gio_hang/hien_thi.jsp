@@ -303,9 +303,12 @@
             <small style="font-size : 20px;justify-content: center;display: flex;flex-wrap: wrap;"><a href="http://localhost:8080/trang-chu/hoa-don-chi-tiet?idHD=${idHoaDon}">Theo dõi đơn hàng  <i class="bi bi-arrow-right-circle-fill"></i></a></small>
             <br>
         </c:if>
-        <div class="text-left">
-            <span>* Lưu ý : Tổng số lượng đơn hàng mua cho phép tối đa 20 sản phẩm </span>
-        </div>
+        <c:if test="${not empty listGhct}">
+
+            <div class="text-left">
+                <span>* Lưu ý : Tổng số lượng đơn hàng mua cho phép tối đa 20 sản phẩm </span>
+            </div>
+        </c:if>
         <div class="text-right">
             <p><strong> <c:set var="totalQuantity" value="0"/>
                 <c:forEach var="gh" items="${listGhct}">
@@ -327,6 +330,7 @@
         </div>
     </div>
 </section>
+<c:if test="${not empty listGhct}">
 <section style="margin-top: 10px" class="section">
     <div class="container">
         <h2 class="mb-4">Thông tin khách hàng</h2>
@@ -411,6 +415,7 @@
 
     </div>
 </section>
+</c:if>
 <footer>
     <div class="container">
         <div class="row">

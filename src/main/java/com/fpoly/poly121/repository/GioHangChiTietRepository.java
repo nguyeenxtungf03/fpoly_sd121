@@ -56,4 +56,8 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
     @Query("select ghct.idSanPhamChiTiet.idSanPham.tenSanPham from GioHangChiTiet ghct where ghct.idSanPhamChiTiet.id = :idSp and  ghct.idGioHang.id = :idGioHang")
     String tenSp(Long idSp , Long idGioHang);
 
+    @Query("select spct.soLuong from SanPhamChiTiet spct where  spct.id = :idSanPhamChiTiet  ")
+    Long soLuongSpCon(Long idSanPhamChiTiet);
+
+
 }
