@@ -18,30 +18,24 @@
 
     <table id="myTable" class="table table-hover">
         <tdead>
-            <tr>
-                <td scope="col">Tài khoản</td>
-                <td scope="col">Họ</td>
-                <td scope="col">Tên đệm</td>
-                <td scope="col">Tên</td>
-                <td scope="col">Ngày Sinh</td>
-                <td scope="col">Email</td>
+            <tr  style="text-align: center">
+                <td scope="col">Stt</td>
+                <td scope="col">Họ và tên</td>
                 <td scope="col">Số điện thoại</td>
+                <td scope="col">Email</td>
                 <td scope="col">Số lượng mua</td>
                 <td scope="col">Tổng chi tiêu</td>
             </tr>
         </tdead>
         <tbody>
 
-        <c:forEach items="${listTop10Kh}" var="kh">
+        <c:forEach items="${listTop10Kh}" var="kh" varStatus="i">
             <c:if test="${not empty kh.trangThai}">
-            <tr>
-                <td scope="row">${kh.id}</td>
-                <td scope="row">${kh.ho}</td>
-                <td scope="row">${kh.tenDem}</td>
-                <td scope="row">${kh.ten}</td>
-                <td scope="row">${kh.ngaySinh}</td>
-                <td scope="row">${kh.email}</td>
+            <tr  style="text-align: center">
+                <td scope="row">${i.index + 1}</td>
+                <td scope="row">${kh.ho} ${kh.tenDem}  ${kh.ten}</td>
                 <td scope="row">${kh.sdt}</td>
+                <td scope="row">${kh.email}</td>
                 <td scope="row"><fmt:formatNumber value="${kh.soLuong}"
                                                   pattern="##,###,###"></fmt:formatNumber></td>
                 <td scope="row"><fmt:formatNumber value="${kh.thanhTien}"
@@ -59,12 +53,11 @@
     <H1 style="text-align: center ; color: #198754">Top 10 sản phẩm bán chạy </H1>
     <table id="myTable" class="table table-hover">
         <tdead>
-            <tr>
-                <td scope="col">Id</td>
+            <tr style="text-align: center">
+                <td scope="col">Stt</td>
+                <td scope="col">Ảnh</td>
                 <td scope="col">Tên sản phẩm </td>
                 <td scope="col">Loại sản phẩm </td>
-                <td scope="col">Màu Sắc </td>
-                <td scope="col">Kích thước </td>
                 <td scope="col">Chất liệu </td>
                 <td scope="col">Thương hiệu </td>
                 <td scope="col">Số lượng mua</td>
@@ -72,13 +65,13 @@
         </tdead>
         <tbody>
 
-        <c:forEach items="${listTop10Sp}" var="sp">
-            <tr>
-                <td scope="row">${sp.idSanPhamChiTiet.id}</td>
-                <td scope="row">${sp.idSanPham.tenSanPham}</td>
+        <c:forEach items="${listTop10Sp}" var="sp" varStatus="i">
+            <tr style="text-align: center">
+                <td scope="row">${i.index + 1}</td>
+                <td><img style=" max-width: 50px;max-height: 50px; object-fit: cover;"
+                         src="/assets/images/imgSp/${sp.idSanPhamChiTiet.anhSanPham}"></td>
+                <td scope="row">${sp.idSanPham.tenSanPham}<br> [ ${sp.idMauSac.tenMauSac} - ${sp.idKichThuoc.tenKichThuoc} ] </td>
                 <td scope="row">${sp.idLoaiSanPham.tenLoai}</td>
-                <td scope="row">${sp.idMauSac.tenMauSac}</td>
-                <td scope="row">${sp.idKichThuoc.tenKichThuoc}</td>
                 <td scope="row">${sp.idChatLieu.tenChatLieu}</td>
                 <td scope="row">${sp.idThuongHieu.tenThuongHieu}</td>
                 <td scope="row"><fmt:formatNumber value="${sp.soLuong}"

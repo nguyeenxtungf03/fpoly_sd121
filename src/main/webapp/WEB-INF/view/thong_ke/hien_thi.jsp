@@ -182,7 +182,7 @@
     </div>
     <div class="col-xl-3 col-md-6">
         <div class="card bg-danger text-bg-light mb-4">
-            <div class="card-body"><i class="bi bi-people-fill"></i> Khách hàng</div>
+            <div class="card-body"><i class="bi bi-people-fill"></i> Khách hàng đã mua</div>
             <div class="card-footer d-flex align-items-center justify-content-between">
                 <div class="small text-white stretched-link">
                     Số khách hàng : <span style="font-weight: 400">${countUniqueCustomers}</span><br>
@@ -204,17 +204,17 @@
                 <form method="get" action="/hoa-don/searchTK " id="searchByDateForm"
                       style="display: flex; flex-direction: row; gap: 0.5rem ; height: 2rem ;align-items: center ">                <i class="fas fa-chart-area me-1"></i>
 
-                    Thời gian từ <input type="date" name="dateBd" placeholder="Bắt đầu " aria-label="Search"
-                                        style="width: 8rem" value="${param.dateBd}" required>
-                    đến <input type="date" placeholder="Kết thúc " name="dateKt" aria-label="Search"
-                               style="width: 8rem" value="${param.dateKt}" required>
+                    Thời gian từ <input class="form-control" type="datetime-local" name="dateBd" placeholder="Bắt đầu " aria-label="Search"
+                                        style="width: 10.6rem" value="${param.dateBd}" required>
+                    đến <input class="form-control" type="datetime-local" placeholder="Kết thúc " name="dateKt" aria-label="Search"
+                               style="width: 10.6rem" value="${param.dateKt}" required>
 
-                    <button style="" class="btn " type="submit"><i class="bi bi-search"></i></button>
+                    <button style="border: 1px solid #565e64" class="btn " type="submit"><i class="bi bi-search"></i></button>
                 </form>
             </div>
-            <div style="display: flex;flex-direction: row ; gap : 1rem;">
+            <div style="display: flex;flex-direction: row ; gap : 0.5rem;">
                 <div>
-                    <button onclick="openNewWindowKh()" class="btn btn-outline-success"><i class="bi bi-bar-chart-line"></i> Top 10 khách hàng tiềm năng
+                    <button onclick="openNewWindowKh()" class="btn btn-outline-success"><i class="bi bi-bar-chart-line"></i> Top 10 Khách hàng tiềm năng
                     </button>
                 </div>
                 <div>
@@ -292,8 +292,8 @@
                 yAxes: [{
                     ticks: {
                         min: 0,
-                        max:  ${ totalQuantity1 + totalQuantity2 + totalQuantity3 + totalQuantity4 +totalQuantity5 +totalQuantity6 +totalQuantity7 + totalQuantity8 +totalQuantity9 +totalQuantity10 +totalQuantity11 +totalQuantity12 },
-                        maxTicksLimit: 8,
+                        max: ${ totalQuantity1 + totalQuantity2 + totalQuantity3 + totalQuantity4 +totalQuantity5 +totalQuantity6 +totalQuantity7 + totalQuantity8 +totalQuantity9 +totalQuantity10 +totalQuantity11 +totalQuantity12 + 120000},
+                        maxTicksLimit: 12,
                         callback: function (value, index, values) {
                             return number_format(value) + ' ₫';
                         }

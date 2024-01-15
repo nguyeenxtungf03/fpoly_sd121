@@ -18,14 +18,14 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class GlobalExceptionHandlerErrors {
 
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleException(Exception e, Model model) {
-        model.addAttribute("error", "500");
-        model.addAttribute("bigText", "Lỗi Nội Bộ của Máy Chủ");
-        model.addAttribute("smallText", "Chúng tôi đang cố gắng khắc phục vấn đề. Vui lòng thử lại sau.");
-        return "errors/error403";
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public String handleException(Exception e, Model model) {
+//        model.addAttribute("error", "500");
+//        model.addAttribute("bigText", "Lỗi Nội Bộ của Máy Chủ");
+//        model.addAttribute("smallText", "Chúng tôi đang cố gắng khắc phục vấn đề. Vui lòng thử lại sau.");
+//        return "errors/error403";
+//    }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

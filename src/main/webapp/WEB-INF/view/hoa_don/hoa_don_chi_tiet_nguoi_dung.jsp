@@ -16,6 +16,12 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
     <title>Hexashop - Product Detail Page</title>
 
 
@@ -161,21 +167,85 @@
     </div>
     <div class="row">
         <div class="col-md-6">
+         <span class="tt" ${hd.trangThai == 1 ? ' style="text-align:center ; color : #ffcc00" ' : hd.trangThai == 6 ? 'style="color: #34ce57;text-align:center"' : hd.trangThai == 7 ? 'style="color: red;text-align:center"' :''}>
+                ${hd.trangThai == 1 ? 'Chờ xác nhận ' : hd.trangThai == 2  ? 'Đơn hàng đã được xác nhận' :
+                        hd.trangThai == 3  ? 'Chờ vận chuyển' : hd.trangThai == 4  ? 'Vận chuyển' :
+                                hd.trangThai == 5  ? 'Thanh toán' : hd.trangThai == 6 ? 'Hoàn thành' : hd.trangThai == 7 ? 'Đơn hàng đã bị hủy' :''}</span><br>
             <p><strong>Tên Khách Hàng:</strong> ${hd.nguoiNhan}</p>
             <p><strong>Địa Chỉ:</strong> ${hd.diaChiNhan}</p>
             <p><strong>Số Điện Thoại:</strong> ${hd.sdtNguoiNhan}</p>
         </div>
-        <div class="col-md-6 text-md-right">
-            <strong ${hd.trangThai == 1 ? ' style="text-align:center ; color : #ffcc00" ' : hd.trangThai == 6 ? 'style="color: #34ce57;text-align:center"' :hd.trangThai == 7 ? 'style="color: red;text-align:center"' :''}  >
-                ${hd.trangThai == 1 ? 'Chờ xác nhận ' : hd.trangThai == 2  ? 'Đơn hàng đã được xác nhận' :hd.trangThai == 2  ? 'Đơn hàng đã được xác nhận' :
-                        hd.trangThai == 3  ? 'Đang chuẩn bị hàng' :hd.trangThai == 4  ? 'Vận chuyển' :
-                                hd.trangThai == 5  ? 'Thanh toán' :hd.trangThai == 6 ? 'Hoàn thành' :hd.trangThai == 7 ? 'Đơn hàng đã bị hủy' :''}</strong><br>
+        <div class="col-md-6 text-md-right" >
+            <br>
             <p><strong>Mã Hóa Đơn:</strong> <span>${hd.id}</span></p>
             <p><strong>Ngày đặt hàng</strong> <span><fmt:formatDate value="${hd.ngayTao}"
                                                                     pattern="dd/MM/yyyy HH:mm:ss"/></span></p>
             <p><strong>Ngày cập nhật </strong> <span><fmt:formatDate value="${hd.ngayCapNhat}"
                                                                      pattern="dd/MM/yyyy HH:mm:ss"/></span></p>
-            </span></p>
+            </span></p><br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                            style="padding: 5px 10px 5px 10px ; font-size: 15px"
+                            class="btn btn-primary " type="button">Thông tin đơn hàng
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Quá trình giao hàng</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="progress">
+                                        <c:forEach items="${listLshd}" var="ls">
+                                            <div class="progress-bar"  ${ls.trangThaiDonHang == 6 ? 'style="background: #34ce57"' : ls.trangThaiDonHang == 7 ? 'style="background: red"' : ''}>
+                                                    <%--icon dat hang--%>
+                                                <c:if test="${ls.trangThaiDonHang == 1}">
+                                                    <i class="fas fa-cart-arrow-down"></i>
+                                                </c:if>
+                                                    <%--icon xac nhan don hang--%>
+                                                <c:if test="${ls.trangThaiDonHang == 2}">
+                                                    <i class="fas fa-check"></i>
+                                                </c:if>
+                                                    <%--icon dong goi--%>
+                                                <c:if test="${ls.trangThaiDonHang == 3}">
+                                                    <i class="fas fa-box"></i>
+                                                </c:if>
+                                                    <%--icon van chuyen--%>
+                                                <c:if test="${ls.trangThaiDonHang == 4}">
+                                                    <i class="fas fa-truck"></i>
+                                                </c:if>
+                                                    <%--icon giao hang--%>
+                                                <c:if test="${ls.trangThaiDonHang == 5}">
+                                                    <i class="fas fa-user"></i>
+                                                </c:if>
+                                                    <%--icon hoan thanh--%>
+                                                <c:if test="${ls.trangThaiDonHang == 6}">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </c:if>
+                                                    <%--icon huy don hang--%>
+                                                <c:if test="${ls.trangThaiDonHang == 7}">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </c:if>
+                                                  <p style="font-size: 10px;font-weight: 400 ; color: white">${ ls.trangThaiDonHang == 1 ? 'Chờ xác nhận' : ls.trangThaiDonHang == 2 ? 'Xác nhận' : ls.trangThaiDonHang == 3 ? 'Chờ vận chuyển' : ls.trangThaiDonHang == 4 ? 'Vận chuyển' : ls.trangThaiDonHang == 5 ? 'Đã thanh toán' : ls.trangThaiDonHang == 6 ? 'Hoàn thành' : ls.trangThaiDonHang == 7 ? 'Hủy đơn hàng'  : ''}</p>
+                                                <p style="font-size: 10px;font-weight: 400"><fmt:formatDate value="${ls.ngayTao}"
+                                                                                                               pattern="dd-MM-yyyy HH:mm:ss"></fmt:formatDate></p>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
         <div class="col-md-6">
             <p><strong>Tổng Tiền:</strong> <fmt:formatNumber value="${hd.tongTien}"
@@ -186,15 +256,39 @@
                                                               pattern="##,###,###"></fmt:formatNumber> ₫</p>
         </div>
         <div class="col-md-6"><br><br>
-            <c:if test="${hd.trangThai == 1 and hd.loaiHoaDon == 1}">
-                <div style="display: flex ; justify-content: end ">
-                    <form  action="/hoa-don/trang-thai-don-hang-khach-hang" method="post">
-                        <input name="trangThai" type="hidden" value="7">
-                        <input name="idHoaDon" type="hidden" value="${hd.id}">
-                        <button onclick="confirmAction(event)"  style="background: red ">Huỷ Đơn Hàng</button>
-                    </form>
-                </div>
+            <c:if test="${hd.trangThai == 1  or hd.trangThai == 2 or hd.trangThai == 3   }">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button style="padding: 5px 10px 5px 10px ; font-size: 15px"
+                        class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal3"
+                        data-bs-whatever="@mdo" type="button">Hủy đơn hàng
+                </button>
+            </div>
             </c:if>
+            <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel3">Xác nhận hủy đơn hàng </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form  action="/hoa-don/trang-thai-don-hang-khach-hang" method="post">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label >Lí do hủy đơn hàng  </label>
+                                    <textarea name="moTa" class="form-control" placeholder="Nhập lý do " required style="height: 150px"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="idHoaDon" value="${hd.id}">
+                                <button onclick="confirmAction(event)" type="submit" class="btn btn-primary">Xác nhận</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     <br>
@@ -215,7 +309,7 @@
                 <th scope="row"><a href="/trang-chu/chi-tiet/${hdct.idSanPhamChiTiet.id}"><img
                         style=" max-width: 50px;max-height: 50px; object-fit: cover;"
                         src="/assets/images/imgSp/${hdct.idSanPhamChiTiet.anhSanPham}"></a></th>
-                <td>${hdct.idSanPhamChiTiet.idSanPham.tenSanPham}</td>
+                <td>${hdct.idSanPhamChiTiet.idSanPham.tenSanPham} <small style="color: #565e64">(  ${hdct.idSanPhamChiTiet.idMauSac.tenMauSac} - ${hdct.idSanPhamChiTiet.idKichThuoc.tenKichThuoc} )</small></td>
                 <td>${hdct.soLuong}</td>
                 <td>
                     <c:if test="${hdct.donGia < hdct.giaGoc}">
@@ -350,6 +444,104 @@
     });
 
 </script>
+<div  id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true"
+      data-delay="1000" style="position: fixed; top: 20px; right: 20px;  z-index: 1051;background: white">
+    <div  ${error != null ? 'style="color: red"': 'style="color: #34ce57"'}  class="toast-body" >
+
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (`${error}` !== '' || `${pass}` !== ''  ) {
+            showSuccessToast('${error}${pass}');
+        }
+
+    });
+    function showSuccessToast(message) {
+        // Lấy phần tử có id là 'successToast'
+        var successToast = document.getElementById("successToast");
+
+        // Thiết lập nội dung của toast
+        successToast.querySelector('.toast-body').innerText = message;
+
+        // Hiển thị toast
+        $(successToast).toast('show');
+
+        // Đặt thời gian tự động ẩn toast sau 1 giây
+        setTimeout(function () {
+            $(successToast).toast('hide');
+        }, 2000);
+    }
+
+</script>
+
+<style>
+
+    .tt{
+        font-size: 20px;
+        font-weight: 600;
+
+    }
+    .progress-bar {
+        text-align: center;
+        padding: 20px; /* Tăng padding cho ô tiến trình */
+        position: relative;
+        width: 14.2857% ;
+        font-size: 12px;
+    }
+
+    .progress {
+        height: 7rem;
+    }
+
+    .progress-bar i {
+        font-size: 100px; /* Tăng kích thước biểu tượng */
+        margin-bottom: 20px; /* Tăng khoảng cách dưới biểu tượng */
+        display: block;
+    }
+
+    .progress-bar:hover {
+        opacity: 0.8;
+    }
+
+    .progress-bar.active {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .progress-bar.active i {
+        color: #fff;
+    }
+
+    .progress-bar.complete {
+        background-color: #28a745;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .progress-bar.complete i {
+        color: #fff;
+    }
+
+    .progress-bar:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 5%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 0 5px 5px; /* Giảm kích thước mũi tên bằng cách sửa đổi giá trị này */
+        border-color: transparent transparent transparent #e9ecef;
+    }
+
+    .progress-bar:last-child::after {
+        display: none;
+    }
+
+</style>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

@@ -36,27 +36,35 @@ public interface HoaDonReponsitory extends JpaRepository<HoaDon ,Long> {
 
     @Query("SELECT COUNT(DISTINCT hd.idKhachHang) AS unique_customer_count " +
             "FROM HoaDon hd " +
-            "JOIN hd.idKhachHang  where hd.ngayCapNhat >= :dateBd and hd.ngayCapNhat <= :dateKt and hd.trangThai <> 7 ")
+            "JOIN hd.idKhachHang  where hd.ngayCapNhat >= :dateBd and hd.ngayCapNhat <= :dateKt and hd.trangThai = 6 ")
     Long countUniqueCustomers(Date dateBd, Date dateKt);
 
+    @Query("select hd.trangThai from HoaDon  hd where hd.id = :idHoaDon")
+    Long findTrangThaibyIdHd(Long idHoaDon);
 
     @Query("SELECT COUNT(DISTINCT hd.idKhachHang) AS unique_customer_count " +
             "FROM HoaDon hd " +
-            "JOIN hd.idKhachHang where hd.trangThai <> 7")
+            "JOIN hd.idKhachHang where hd.trangThai = 6")
     Long countUniqueCustomersAll();
 
     @Query("select hd from HoaDon hd WHERE hd.trangThai = 6 ")
     List<HoaDon> doanhThuHt();
 
-    @Query("select hd from HoaDon hd WHERE hd.trangThai = 6  ")
+    @Query("select hd from HoaDon hd WHERE hd.ngayCapNhat >= :dateBd and hd.ngayCapNhat <= :dateKt and hd.trangThai = 6 ")
+    List<HoaDon> doanhThuHtSearch(Date dateBd, Date dateKt);
+
+    @Query("select hd from HoaDon hd WHERE  hd.trangThai = 6  ")
     List<HoaDon> hoaDonDaBan();
 
     @Query("select hd from HoaDon hd WHERE hd.ngayCapNhat >= :dateBd and hd.ngayCapNhat <= :dateKt and hd.trangThai = 6  ")
     List<HoaDon> hoaDonDaBanSearch(Date dateBd, Date dateKt);
 
 
-    @Query("select hdct from HoaDonChiTiet hdct where  hdct.idHoaDon.trangThai <> 7 and hdct.idHoaDon.trangThai <> 1")
+    @Query("select hdct from HoaDonChiTiet hdct where  hdct.idHoaDon.trangThai = 6")
     List<HoaDonChiTiet>  sanPhamDaBan();
+
+    @Query("select hdct from HoaDonChiTiet hdct where hdct.idHoaDon.ngayCapNhat >= :dateBd and hdct.idHoaDon.ngayCapNhat <= :dateKt and  hdct.idHoaDon.trangThai = 6")
+    List<HoaDonChiTiet>  sanPhamDaBanSearch(Date dateBd, Date dateKt);
 
     @Query("select hd \n" +
             "from HoaDon hd where hd.idKhachHang.tenTaiKhoan.tenTaiKhoan = :tk order by hd.ngayTao desc \n")
@@ -67,8 +75,8 @@ public interface HoaDonReponsitory extends JpaRepository<HoaDon ,Long> {
             "order by hd.ngayTao desc")
     Page<HoaDon> listHd(Pageable pageable);
 
-    @Query("select hd from HoaDon  hd where hd.trangThai = :trangThai order by hd.ngayTao desc")
-    List<HoaDon> trangThaiHoaDon(Long trangThai);
+    @Query("select hd from HoaDon  hd where (:loaiHoaDon  IS NULL OR hd.loaiHoaDon = :loaiHoaDon) and (:trangThai IS NULL OR hd.trangThai = :trangThai ) order by hd.ngayTao desc")
+    List<HoaDon> trangThaiHoaDon(Long loaiHoaDon , Long trangThai);
 
 
     @Modifying
@@ -80,5 +88,6 @@ public interface HoaDonReponsitory extends JpaRepository<HoaDon ,Long> {
     void updateNgay(@Param("ngayCapNhat") Date ngayCapNhat,@Param("idHoaDon") Long idHoaDon );
 
     List<HoaDon> findByTrangThai(Integer trangThai);
+
 
 }

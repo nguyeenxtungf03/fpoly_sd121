@@ -48,10 +48,6 @@ public class TrangChuController {
     @Autowired
     private HoaDonChiTietService hoaDonChiTietService;
 
-
-    @Autowired
-    private HoaDonReponsitory hoaDonReponsitory;
-
     @Autowired
     private HoaDonService hoaDonService;
 
@@ -61,8 +57,6 @@ public class TrangChuController {
     @Autowired
     private SanPhamReponsitory sanPhamReponsitory;
 
-    @Autowired
-    private SanPhamChiTietReponsitory sanPhamChiTietReponsitory;
 
     @Autowired
     private KichThuocRepository kichThuocRepository;
@@ -76,9 +70,22 @@ public class TrangChuController {
     @Autowired
     private KhuyenMaiRepository khuyenMaiRepository;
 
+    @Autowired
+    private ThuongHieuRepository thuongHieuRepository;
+
+    @Autowired
+    private ChatLieuRepository chatLieuRepository;
+
+    @Autowired
+    private LoaiSanPhamRepository loaiSanPhamRepository;
+
+    @Autowired
+    private LichSuDonHangRepository lichSuDonHangRepository;
+
 
     @GetMapping
     public String view(Model model) {
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
         List<SanPhamValue> listSpAoNam = sanPhamReponsitory.getAoNamMoi();
         List<SanPhamValue> listSpQuanNam = sanPhamReponsitory.getQuanNamMoi();
         List<SanPhamValue> listSpAoNu = sanPhamReponsitory.getAoNuMoi();
@@ -100,17 +107,13 @@ public class TrangChuController {
                 if (km.getId().equals(spv.getIdKhuyenMai())) mapIdSpKm.put(spv.getIdSp(), km);
             }
         }
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
+        model.addAttribute("username", SecurityUtil.getUsernameLogin());
         model.addAttribute("listSpAoNam", listSpAoNam);
         model.addAttribute("listSpQuanNam", listSpQuanNam);
         model.addAttribute("listSpAoNu", listSpAoNu);
         model.addAttribute("listSpQuanNu", listSpQuanNu);
         model.addAttribute("mapIdSpKm", mapIdSpKm);
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+
 
         Date newDate = new Date();
         model.addAttribute("newDate" , newDate);
@@ -142,17 +145,14 @@ public class TrangChuController {
 
     @GetMapping("all-san-pham")
     public String viewAll(Model model) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
 
         List<SanPhamChiTiet> listAllSp = trangChuService.getAll();
         model.addAttribute("listAllSp", listAllSp);
 
         String tk = SecurityUtil.getUsernameLogin();
+
         if (tk.isEmpty()) {
             try {
                 // Lấy đối tượng InetAddress đại diện cho máy tính hiện tại
@@ -179,28 +179,52 @@ public class TrangChuController {
     }
 
     @GetMapping("chi-tiet")
-    public String detailCt(Model model, @RequestParam (name = "idSanPham" ,required = false) Long idSanPham ,@RequestParam (name = "idKichThuoc",required = false) Long idKichThuoc ,
-                         @RequestParam (name = "idMauSac" ,required = false) Long idMauSac ) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+    public String detailCt(Model model, @RequestParam (name = "idSanPham" ,required = false) Long idSanPham ,
+                           @RequestParam (name = "idKichThuoc",required = false) Long idKichThuoc ,
+                           @RequestParam (name = "idThuongHieu",required = false) Long idThuonghieu ,
+                           @RequestParam (name = "idLoaiSanPham",required = false) Long idLoaiSanPham ,
+                           @RequestParam (name = "idChatLieu",required = false) Integer idChatLieu ,
+                           @RequestParam (name = "idMauSac" ,required = false) Long idMauSac  ) {
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
 
         Date newDate = new Date();
         model.addAttribute("newDate" , newDate);
 
-        SanPhamChiTiet spct = sanPhamChiTietRepository.findRandomSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(idSanPham ,idMauSac,idKichThuoc);
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findRandomSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(idSanPham ,idMauSac,idKichThuoc,idLoaiSanPham,idThuonghieu,idChatLieu );
+
         if(spct != null){
             model.addAttribute("spct", spct);
             Long idSanPham2  = spct.getIdSanPham().getId();
 
-            List<MauSac> listms = mauSacReponsitory.findMauSacBySanPhamAndKichThuoc(idSanPham2,idKichThuoc) ;
+            List<SanPhamChiTiet> listAnh = mauSacReponsitory.findAnh(idSanPham,spct.getIdLoaiSanPham().getId(),spct.getIdThuongHieu().getId(),spct.getIdChatLieu().getId()) ;
+            model.addAttribute("listAnh" ,listAnh);
+
+            List<MauSac> listms = mauSacReponsitory.findMauSacBySanPhamAndKichThuoc(idSanPham,idLoaiSanPham,idThuonghieu,idChatLieu);
             model.addAttribute("listms" ,listms);
 
-            List<KichThuoc> listkt = kichThuocRepository.findKichThuocBySanPhamAnhMauSac(idSanPham2,idMauSac);
+            List<KichThuoc> listkt = kichThuocRepository.findKichThuocBySanPhamAnhMauSac(idSanPham2,idMauSac,idLoaiSanPham,idThuonghieu,idChatLieu);
             model.addAttribute("listkt" ,listkt);
+
+        }else {
+            SanPham sp = sanPhamReponsitory.getById(idSanPham);
+            MauSac ms = mauSacReponsitory.getById(idMauSac);
+            LoaiSanPham lsp  = loaiSanPhamRepository.getById(idLoaiSanPham);
+            ThuongHieu th = thuongHieuRepository.getById(idThuonghieu);
+            ChatLieu cl = chatLieuRepository.getById(idChatLieu);
+
+            SanPhamChiTiet spctMauSac = sanPhamChiTietRepository.findFirstByidSanPhamAndIdMauSacAndIdLoaiSanPhamAndIdThuongHieuAndIdChatLieuAndTrangThai(sp,ms,lsp,th,cl,0L);
+            model.addAttribute("spct", spctMauSac);
+
+            List<SanPhamChiTiet> listAnh = mauSacReponsitory.findAnh(idSanPham,idLoaiSanPham,idThuonghieu,idChatLieu) ;
+            model.addAttribute("listAnh" ,listAnh);
+
+            List<MauSac> listms = mauSacReponsitory.findMauSacBySanPhamAndKichThuoc(idSanPham,idLoaiSanPham,idThuonghieu,idChatLieu);
+            model.addAttribute("listms" ,listms);
+
+            List<KichThuoc> listkt = kichThuocRepository.findKichThuocBySanPhamAnhMauSac(idSanPham,idMauSac,idLoaiSanPham, idThuonghieu,idChatLieu);
+            model.addAttribute("listkt" ,listkt);
+        }
 
             String tk = SecurityUtil.getUsernameLogin();
             if (tk.isEmpty()){
@@ -259,19 +283,11 @@ public class TrangChuController {
             return "san_pham_chi_tiet/thongTinSp";
 
 
-        }else {
-           return "redirect:/trang-chu";
-        }
-
     }
     @GetMapping("chi-tiet/{id}")
-    public String detail(ModelMap model, @PathVariable Long id ) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+    public String detail( @PathVariable Long id , Model model  ) {
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
 
 
         Date newDate = new Date();
@@ -281,13 +297,19 @@ public class TrangChuController {
         model.addAttribute("spct", spct);
 
         Long idSanPham  = spct.getIdSanPham().getId();
-        Long idKichThuoc = spct.getIdKichThuoc().getId();
         Long idMauSac = spct.getIdMauSac().getId();
+        Long idLoaiSanPham = spct.getIdLoaiSanPham().getId();
+        Long idThuongHieu = spct.getIdThuongHieu().getId();
+        Integer idChatLieu = spct.getIdChatLieu().getId();
 
-        List<MauSac> listms = mauSacReponsitory.findMauSacBySanPhamAndKichThuoc(idSanPham,idKichThuoc) ;
+
+        List<SanPhamChiTiet> listAnh = mauSacReponsitory.findAnh(idSanPham,spct.getIdLoaiSanPham().getId(),spct.getIdThuongHieu().getId(),spct.getIdChatLieu().getId()) ;
+        model.addAttribute("listAnh" ,listAnh);
+
+        List<MauSac> listms = mauSacReponsitory.findMauSacBySanPhamAndKichThuoc(idSanPham,spct.getIdLoaiSanPham().getId(),spct.getIdThuongHieu().getId(),spct.getIdChatLieu().getId()) ;
         model.addAttribute("listms" ,listms);
 
-        List<KichThuoc> listkt = kichThuocRepository.findKichThuocBySanPhamAnhMauSac(idSanPham,idMauSac);
+        List<KichThuoc> listkt = kichThuocRepository.findKichThuocBySanPhamAnhMauSac(idSanPham,idMauSac,idLoaiSanPham,idThuongHieu,idChatLieu);
         model.addAttribute("listkt" ,listkt);
 
 
@@ -355,12 +377,9 @@ public class TrangChuController {
 
     @GetMapping("hoa-don")
     private String hoaDon(Model model) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
+
         String tk = SecurityUtil.getUsernameLogin();
         List<HoaDon> listHdtk = hoaDonService.findHoaDonByTaiKhoan(tk);
         model.addAttribute("listHdtk", listHdtk);
@@ -370,12 +389,11 @@ public class TrangChuController {
 
     @GetMapping("hoa-don-chi-tiet")
     private String hoaDonChiTiet(@RequestParam() HoaDon idHD, Model model) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
+
+        List<LichSuDonHang> listLshd = lichSuDonHangRepository.findLichSuDonHangByIdAndIdDonHang(idHD.getId());
+        model.addAttribute("listLshd", listLshd);
 
         List<HoaDonChiTiet> listHdct = hoaDonChiTietService.searchidHD(idHD);
         model.addAttribute("listHdct", listHdct);
@@ -408,12 +426,8 @@ public class TrangChuController {
 
     @GetMapping("detail-nguoi-dung")
     public String detail(Model model) {
-        model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
-        model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
-        model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
-        model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+        // lay thong tin tk
+        SecurityAttributesUtil.setSecurityAttributes(model, taiKhoanRepository, khachHangRepository);
 
         String tk = SecurityUtil.getUsernameLogin();
         if (tk.isEmpty()) {

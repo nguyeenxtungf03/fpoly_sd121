@@ -15,9 +15,9 @@
 </head>
 
 <body class="container">
-<form id="myForm10" action="/san-pham/add" method="post">
+<form class="row g-3 needs-validation" novalidate id="myForm10" action="/san-pham/add" method="post">
     <span>Tên sản phẩm </span><br>
-    <input style="height: 100%" type="text" required name="tenSanPham"><br>
+    <input class="form-control"  type="text"  required name="tenSanPham"><br>
     <span style="color: red">${errors}</span><br>
     <button class="btn btn-primary" type="submit">Thêm</button>
 </form>
@@ -40,10 +40,6 @@
                 // Handle the response data
                 console.log(data);
 
-                // Optionally, update the UI without reloading the page
-                // ...
-
-                // For illustration purposes, alert when form is submitted
                 alert('Form submitted without page reload!');
 
                 // Reload the page

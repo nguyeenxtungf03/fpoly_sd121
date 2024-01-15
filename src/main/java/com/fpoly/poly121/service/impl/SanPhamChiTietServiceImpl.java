@@ -1,5 +1,6 @@
 package com.fpoly.poly121.service.impl;
 
+import com.fpoly.poly121.dto.request.HoaDonChiTietDto;
 import com.fpoly.poly121.dto.request.SanPhamDto;
 import com.fpoly.poly121.dto.request.TopSpDto;
 import com.fpoly.poly121.model.*;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,7 +46,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
 
         try {
             String fileName = file.getOriginalFilename();
-            String absolutePath = FileUtils.getFile("../../../../DA/src/main/webapp/", relativePath).getCanonicalPath();
+            String absolutePath = FileUtils.getFile("../../../../DATN/fpoly_sd121/src/main/webapp/", relativePath).getCanonicalPath();
             File uploadDir = new File(absolutePath);
             FileUtils.forceMkdir(uploadDir);
             uploadDir.setWritable(true);
@@ -57,6 +60,27 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
         } catch (IOException e) {
             sanPhamChiTiet.setAnhSanPham("anh_trong.png");
             sanPhamChiTietRepository.save(sanPhamChiTiet);
+            e.printStackTrace();
+        }
+
+    }
+
+    public void addAnh(MultipartFile file) {
+
+        String relativePath = "assets/images/imgSp/";
+
+        try {
+            String fileName = file.getOriginalFilename();
+            String absolutePath = FileUtils.getFile("../../../../DATN/fpoly_sd121/src/main/webapp/", relativePath).getCanonicalPath();
+            File uploadDir = new File(absolutePath);
+            FileUtils.forceMkdir(uploadDir);
+            uploadDir.setWritable(true);
+
+            File uploadedFile = new File(uploadDir, fileName);
+            uploadedFile.setWritable(true);
+            file.transferTo(uploadedFile);
+            System.out.println("File uploaded to: " + uploadedFile.getAbsolutePath());
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -102,5 +126,23 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
             dto.setTrangThai((Long) result[5]);
             return dto;
         });
+    }
+
+    public List<SanPhamDto> boLocSp(SanPham sanPham , LoaiSanPham loaiSanPham, ThuongHieu thuongHieu,ChatLieu chatLieu , Long trangThai) {
+        List<Object[]> results = sanPhamChiTietRepository.boLocSanPham(sanPham,loaiSanPham,thuongHieu,chatLieu,trangThai);
+        List<SanPhamDto> sanPhamDtos = new ArrayList<>();
+
+        for (Object[] result : results) {
+            SanPhamDto dtoSp = new SanPhamDto();
+            dtoSp.setIdSanPham((SanPham) result[0]);
+            dtoSp.setIdLoaiSanPham((LoaiSanPham) result[1]);
+            dtoSp.setIdThuongHieu((ThuongHieu) result[2]);
+            dtoSp.setIdChatLieu((ChatLieu) result[3]);
+            dtoSp.setSoLuong((Long) result[4]);
+            dtoSp.setTrangThai((Long) result[5]);
+            sanPhamDtos.add(dtoSp);
+        }
+        return sanPhamDtos;
+
     }
 }

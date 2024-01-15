@@ -1,9 +1,11 @@
 package com.fpoly.poly121.controller;
 
 import com.fpoly.poly121.model.KichThuoc;
+import com.fpoly.poly121.repository.KichThuocRepository;
 import com.fpoly.poly121.service.KichThuocService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ public class KichThuocController {
     private KichThuocService ser;
     List<KichThuoc> listkt;
 
+    @Autowired
+    private KichThuocRepository kichThuocRepository;
+
     @GetMapping("/hien-thi")
     public String getAll(@RequestParam(defaultValue = "0") Integer page, Model model) {
         Page<KichThuoc> page1 = ser.getAll(page);
@@ -32,9 +37,13 @@ public class KichThuocController {
     @PostMapping("/add")
     public String them(Model model,
                        @RequestParam("tenKichThuoc") String tenKichThuoc) {
-        KichThuoc kichThuoc = new KichThuoc();
-        kichThuoc.setTenKichThuoc(tenKichThuoc);
-        ser.add(kichThuoc);
+
+        KichThuoc kt = kichThuocRepository.tenKt(tenKichThuoc);
+        if (kt == null){
+            KichThuoc kichThuoc = new KichThuoc();
+            kichThuoc.setTenKichThuoc(tenKichThuoc);
+            ser.add(kichThuoc);
+        }
         return "redirect:/kich-thuoc/hien-thi";
     }
 

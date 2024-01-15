@@ -8,51 +8,60 @@
 <body>
 <form id="myForm" action="/khuyen-mai/update/${km.id}" method="post" onsubmit="return validateDateRange()">
     <div class="form-column">
-        <div class="col-md-12 mb-3" style="text-align: center; font-weight:600;"> Cập nhật khuyến mại</div>
+        <div class="col-md-12 mb-3" style="text-align: center; font-weight:600;"> Thông tin khuyến mại</div>
         <div class="col-md-12 mb-3">
             <label for="productName">Tên khuyến mại</label>
-            <input name="tenKhuyenMai" value="${km.tenKhuyenMai}" type="text" class="form-control" id="productName"
+            <input  disabled  value="${km.tenKhuyenMai}" type="text" class="form-control" id="productName2"
+                   required>
+            <input name="tenKhuyenMai"  value="${km.tenKhuyenMai}" type="hidden" class="form-control" id="productName"
                    required>
         </div>
         <div class="col-md-12 mb-3">
-                  <span style="display: none; gap : 10px; flex-direction: row;">
+                  <span style=" gap : 10px; flex-direction: row;">
                       Loại Khuyến Mại :
                       <input  ${km.loaiKhuyenMai == "product" ?  'checked' :''}
                              type="radio"
                              name="loaiKhuyenMai" onclick="limitPercentage()"
-                             value="product">VNĐ
+                             value="product"> VNĐ
                       <input style="margin-left: 20px;"
                              type="radio" ${km.loaiKhuyenMai == "percentage" ?  'checked' :''}
                              name="loaiKhuyenMai" onclick="limitPercentage()"
-                             value="percentage">%</span>
+                             value="percentage"> %</span>
         </div>
-        <label class="mb-2" style="color: green; font-weight: bolder">Giá Trị Khuyến Mại: ${km.giaTri}<c:if test="${km.loaiKhuyenMai == 'product'}" > VNĐ</c:if> <c:if test="${km.loaiKhuyenMai == 'percentage'}" > %</c:if></label>
-        <div class="col-md-12 mb-3" style="display: none">
-
+        <div class="col-md-12 mb-3" >
+            <label for="discountValue">Giá trị</label>
+            <c:if test="${km.loaiKhuyenMai == 'product'}">
             <input value="${km.giaTri}" name="giaTri" type="number" min="1" max="10000000" class="form-control" id="discountValue"
                    required>
+            </c:if>
+
+            <c:if test="${km.loaiKhuyenMai == 'percentage'}">
+                <input value="${km.giaTri}"  name="giaTri" type="number" min="1" max="100" class="form-control" id="discountValue"
+                       required>
+            </c:if>
         </div>
         <div class="col-md-12 mb-3">
             <label for="discountValue">Ngày bắt đầu</label>
-            <input type="date" id="startDate" value="${km.ngayBatDau}" name="ngayBatDau" class="form-control" required>
+            <input type="datetime-local" id="startDate" value="${km.ngayBatDau}" name="ngayBatDau" class="form-control" required>
         </div>
         <div class="col-md-12 mb-3">
             <label for="discountValue">Ngày kết thúc</label>
-            <input type="date" id="endDate" value="${km.ngayKetThuc}" name="ngayKetThuc" class="form-control" required>
+            <input type="datetime-local" id="endDate" value="${km.ngayKetThuc}" name="ngayKetThuc" class="form-control" required>
+        </div>
+
+        <div  class="col-md-12 mb-3">
+            <label for="discountValue">Trạng thái : </label>
+            <span style="font-weight: 600"> <span  ${km.trangThai == 1 && km.ngayBatDau <= newDate && newDate <= km.ngayKetThuc ? 'style="color: #34ce57"': km.trangThai == 1 && km.ngayBatDau > newDate && newDate <= km.ngayKetThuc  ? 'style="color: #ffc720"':'style="color: red"'} >${km.trangThai == 1 && km.ngayBatDau <= newDate && newDate <= km.ngayKetThuc  ? 'Đang áp dụng' :km.trangThai == 1 && km.ngayBatDau > newDate ? 'Chưa áp dụng':'Hết hạn ' }</span></span>
         </div>
     </div>
-
-    <div class="col-md-12 mb-3" style="text-align: center; font-weight:600;">
-        <c:if test="${newDate < km.ngayKetThuc}">
-            <button class="btn btn-primary " type="submit">Cập nhật</button>
-        </c:if>
-        <c:if test="${newDate > km.ngayKetThuc}">
-            <span style="color: red"> * Chú ý : Khuyến mại đã hết hạn không thể cập nhật !</span>
-        </c:if>
+    <div style="display: flex ; flex-direction: column; align-content: center">
+    <button  class="btn btn-primary" onclick="confirmAction(event)" type="submit">Cập nhật</button><br>
     </div>
 </form>
-<c:if test="${newDate < km.ngayKetThuc}">
-<table class="table table-hover">
+<c:if test="${not empty dsSpctKm}">
+
+    <div style="text-align: center ; font-weight: 600 ; font-size: 20px">Sản phẩm khuyến mại</div>
+<table class="table table-hover" style="font-size: 12px ; font-weight: 500" >
     <tdead style = "color: white">
         <tr style="background: #5c636a ">
             <td style="color: white" scope="col"> Ảnh</td>
@@ -66,7 +75,7 @@
     <tbody>
     <c:forEach items="${dsSpctKm}" var="spct">
     <tr>
-        <td scope="row"><a href="/san-pham-chi-tiet/detail/${spct.id}"><img style="width: 3rem ;height: 4rem"
+        <td scope="row"><a href="/san-pham-chi-tiet/detail/${spct.id}"><img style="width: 2rem ;height: 2.5rem"
                                                                             src="../../../assets/images/imgSp/${spct.anhSanPham}"></a>
         <td scope="row">${spct.idSanPham.tenSanPham} <br> [ ${spct.idMauSac.tenMauSac} - ${spct.idKichThuoc.tenKichThuoc} ]</td>
         <td scope="row"><fmt:formatNumber>${spct.giaBan}</fmt:formatNumber></td>
@@ -75,69 +84,72 @@
         </td>
         <td>
             <form action="/khuyen-mai/deleteKmSp/${spct.id}" method="post">
-                <button  class="btn btn-primary " style="background: red" type="submit">Xoá</button>
+                <button  class="btn btn-primary " style="background: red" type="submit"><i class="bi bi-trash3"></i></button>
             </form>
         </td>
 
     </tr>
     </c:forEach>
 </table>
-    <c:if test="${ empty dsSpctKm}">
-        <p style="text-align: center ; color: red">Sản phẩm hết khuyến mại hoặc đã cập nhật khuyến mại mới !</p>
-    </c:if>
 </c:if>
 
 
 <!-- Include thư viện SweetAlert2 (đặt trước mã JavaScript của bạn) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    function confirmAction(event) {
+
+        // Hiển thị hộp thoại xác nhận
+        if (confirm("Bạn có chắc chắn muốn cập nhật khuyến mại này ?")) {
+            // Nếu người dùng chấp nhận, thực hiện chuyển hướng
+            window.location.href = event.currentTarget.querySelector('button').getAttribute('submit');
+        }
+        // Ngăn chặn sự kiện mặc định (nhảy trang)
+        event.preventDefault();
+    }
+</script>
 
 <script>
-    // Kiểm tra radio button và áp dụng giới hạn giá trị
-    function limitPercentage() {
-        var discountInput = document.getElementById('discountValue');
-        var vndRadio = document.querySelector('input[name="loaiKhuyenMai"][value="product"]');
-        var percentageRadio = document.querySelector('input[name="loaiKhuyenMai"][value="percentage"]');
-
-        if (vndRadio.checked) {
-            discountInput.max = null;
-        } else if (percentageRadio.checked) {
-            discountInput.max = 100;
-        }
-    }
-</script><script>
     function validateDateRange() {
+        var name = document.getElementById('productName').value;
+        var name2 = document.getElementById('productName2').value;
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
+
         var currentDate = new Date();
 
-        // Đặt tất cả các thành phần giờ, phút, giây, và mili giây về 0
         startDate = new Date(startDate);
         endDate = new Date(endDate);
-        currentDate.setHours(0, 0, 0, 0);
 
         if (startDate >= endDate) {
-            // Sử dụng SweetAlert2 để hiển thị thông báo và tự động đóng sau 1 giây
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi',
-                text: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc',
+                text: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc !',
                 timer: 1000, // 1 giây
                 showConfirmButton: false,
             });
             return false; // Ngăn chặn việc submit form
         } else if (startDate <= currentDate) {
-            // Sử dụng SweetAlert2 để hiển thị thông báo và tự động đóng sau 1 giây
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi',
-                text: 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
+                text: 'Ngày bắt đầu phải lớn hơn ngày hiện tại !',
                 timer: 1000, // 1 giây
                 showConfirmButton: false,
             });
-            return false; // Ngăn chặn việc submit form
+            return false;
+        } else if (name !== '${km.tenKhuyenMai}' || name2 !== '${km.tenKhuyenMai}') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Cập nhật không thành công !',
+            timer: 1000, // 1 giây
+            showConfirmButton: false,
+        });
+        return false;
         } else {
-            // Sử dụng SweetAlert2 để hiển thị thông báo thành công và tự động đóng sau 1 giây
             Swal.fire({
                 icon: 'success',
                 title: 'Thành công',
@@ -148,15 +160,30 @@
             setTimeout(() => {
                 submitForm();
             }, 1200);
-            return false; // Thay đổi thành false để không submit form ngay lập tức
+            return false;
         }
     }
 
     function submitForm() {
         // Thực hiện hành động submit form
         document.getElementById('myForm').submit();
+        event.preventDefault();
     }
 
+</script>
+<script>
+    // Kiểm tra radio button và áp dụng giới hạn giá trị
+    function limitPercentage() {
+        var discountInput = document.getElementById('discountValue');
+        var vndRadio = document.querySelector('input[name="loaiKhuyenMai"][value="product"]');
+        var percentageRadio = document.querySelector('input[name="loaiKhuyenMai"][value="percentage"]');
+
+        if (vndRadio.checked) {
+            discountInput.max = 10000000;
+        } else if (percentageRadio.checked) {
+            discountInput.max = 100;
+        }
+    }
 </script>
 
 </body>
