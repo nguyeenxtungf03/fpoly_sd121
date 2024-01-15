@@ -2,9 +2,13 @@ package com.fpoly.poly121.controller;
 
 
 import com.fpoly.poly121.dto.request.GioHangChiTietDto;
+import com.fpoly.poly121.dto.response.HuyenResponse;
+import com.fpoly.poly121.dto.response.TinhResponse;
+import com.fpoly.poly121.dto.response.XaResponse;
 import com.fpoly.poly121.model.*;
 import com.fpoly.poly121.repository.*;
 import com.fpoly.poly121.security.dto.TaiKhoan;
+import com.fpoly.poly121.service.GHNService;
 import com.fpoly.poly121.service.GioHangChiTietService;
 import com.fpoly.poly121.service.SanPhamChiTietService;
 import com.fpoly.poly121.service.impl.SanPhamChiTietServiceImpl;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("gio-hang")
@@ -55,6 +61,9 @@ public class GioHangChiTietController {
 
     @Autowired
     private SanPhamChiTietReponsitory sanPhamChiTietReponsitory;
+
+    @Autowired
+    private GHNService ghnService;
 
 
     public static class SecurityAttributesUtil {
@@ -318,11 +327,11 @@ public class GioHangChiTietController {
         return "redirect:/gio-hang/hien-thi";
     }
 
+    @Transactional
     @PostMapping("thanh-toan")
     public String buy(Model model, @RequestParam(required = false) String tinh,
                       @RequestParam(required = false) String huyen,
                       @RequestParam(required = false) String phuong,
-                      @RequestParam(required = false) String diaChi,
                       @RequestParam(required = false) String diaChiNhan, @RequestParam(required = false) String sdtNguoiNhan,
                       @RequestParam(required = false) String hoNguoiNhan, @RequestParam(required = false) String tenNguoiNhan) {
 
@@ -332,7 +341,6 @@ public class GioHangChiTietController {
             model.addAttribute("tenNguoiNhan", tenNguoiNhan);
             model.addAttribute("sdtNguoiNhan", sdtNguoiNhan);
             model.addAttribute("diaChiNhan", diaChiNhan);
-            model.addAttribute("diaChi", diaChi);
             List<GioHangChiTietDto> listGhctDto = null;
 
 
@@ -501,6 +509,35 @@ public class GioHangChiTietController {
                     }
                 }
 
+                List<TinhResponse> listTinh = ghnService.getProvinces();
+                List<String> listIdTinh = listTinh.stream().map(TinhResponse::getId).toList();
+                if (!listIdTinh.contains(tinh)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenTinh = listTinh.stream().filter(x -> x.getId().equals(tinh)).findFirst().get().getTenTinh();
+
+                List<HuyenResponse> listHuyen = ghnService.getDistricts(tinh);
+                List<String> listIdHuyen = listHuyen.stream().map(HuyenResponse::getId).toList();
+                if (!listIdHuyen.contains(huyen)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenHuyen = listHuyen.stream().filter(x -> x.getId().equals(huyen)).findFirst().get().getTenHuyen();
+
+                List<XaResponse> listXa = ghnService.getWards(huyen);
+                List<String> listIdXa  = listXa.stream().map(XaResponse::getMaXa).toList();
+                if (!listIdXa.contains(phuong)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenXa = listXa.stream().filter(x -> x.getMaXa().equals(phuong)).findFirst().get().getTenXa();
+
+                Long phiVanCHuyen = ghnService.getTransportFee(huyen, phuong).getTongPhi();
+
                 // tao hoa don moi
                 hoaDon.setTrangThai(1L);
                 hoaDon.setNgayTao(new Date());
@@ -508,17 +545,17 @@ public class GioHangChiTietController {
                 hoaDon.setIdKhachHang(idKhachHang);
                 hoaDon.setNguoiNhan(hoNguoiNhan + " " + tenNguoiNhan);
                 hoaDon.setSdtNguoiNhan(sdtNguoiNhan);
-                hoaDon.setDiaChiNhan(diaChi + diaChiNhan);
+                hoaDon.setDiaChiNhan(tenTinh + ", " + tenHuyen + ", " + tenXa + ", " + diaChiNhan);
                 hoaDon.setTongTien(tongTien);
-                hoaDon.setPhiVanChuyen(0);
-                hoaDon.setThanhTien(tongTien);
+                hoaDon.setPhiVanChuyen(phiVanCHuyen.intValue());
+                hoaDon.setThanhTien(tongTien + phiVanCHuyen);
                 hoaDon.setLoaiHoaDon(1L);
-                if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null || diaChi == null) {
+                if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null) {
                     model.addAttribute("errors", "Vui lòng điền đầy đủ thông tin để tiếp tục đặt hàng !");
                     model.addAttribute("listGhct", listGhctDto);
                     return "gio_hang/hien_thi";
                 } else {
-                    if (tenNguoiNhan.isBlank() || hoNguoiNhan.isBlank() || diaChiNhan.isBlank() || sdtNguoiNhan.isBlank() || tinh.isBlank() || huyen.isBlank() || phuong.isBlank() || diaChi.isBlank()) {
+                    if (tenNguoiNhan.isBlank() || hoNguoiNhan.isBlank() || diaChiNhan.isBlank() || sdtNguoiNhan.isBlank() || tinh.isBlank() || huyen.isBlank() || phuong.isBlank()) {
                         model.addAttribute("notBlank", "Chú ý : Các ô đánh dấu ( * ) không được để trống !");
                     } else {
                         // Luu hoa don
@@ -551,7 +588,6 @@ public class GioHangChiTietController {
                         model.addAttribute("tenNguoiNhan", null);
                         model.addAttribute("sdtNguoiNhan", null);
                         model.addAttribute("diaChiNhan", null);
-                        model.addAttribute("diaChi", null);
                         model.addAttribute("idHoaDon", hoaDon.getId());
                         return "gio_hang/hien_thi";
                     }
