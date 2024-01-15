@@ -33,6 +33,7 @@ public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai , Long> {
     List<KhuyenMai> kmCheck(Long idKm);
 
 
+
     @Query("SELECT km " +
             "FROM KhuyenMai km " +
             "WHERE (:tenKm = '' OR km.tenKhuyenMai = :tenKm  ) " +

@@ -195,8 +195,8 @@ public class KhuyenMaiController {
                     model.addAttribute("selectedProductIds", selectedProductIds);
                     return "khuyen_mai/form_add";
                 }
-                if (loaiKhuyenMai.equals("product") && giaTri > 10000000) {
-                    model.addAttribute("errors", "Giá trị khuyến mại theo giá tiền không quá 10.000.000 VNĐ");
+                if (loaiKhuyenMai.equals("product") && giaTri > 100000000) {
+                    model.addAttribute("errors", "Giá trị khuyến mại theo giá tiền không quá 100.000.000 VNĐ");
                     model.addAttribute("km", khuyenMai);
                     model.addAttribute("selectedProductIds", selectedProductIds);
                     return "khuyen_mai/form_add";
@@ -372,8 +372,8 @@ public class KhuyenMaiController {
                 model.addAttribute("errors", "Ngày kết thúc phải lớn hơn hoặc bằng ngày hiện tại");
                 return "redirect:/khuyen-mai/hien-thi";
             }
-            if (loaiKhuyenMai.equals("product") && giaTri > 10000000) {
-                model.addAttribute("errors", "Giá trị khuyến mại theo giá tiền không quá 10.000.000 VNĐ");
+            if (loaiKhuyenMai.equals("product") && giaTri > 100000000) {
+                model.addAttribute("errors", "Giá trị khuyến mại theo giá tiền không quá 100.000.000 VNĐ");
                 model.addAttribute("km", khuyenMai);
                 return "redirect:/khuyen-mai/hien-thi";
             }
@@ -382,9 +382,24 @@ public class KhuyenMaiController {
                 model.addAttribute("km", khuyenMai);
                 return "redirect:/khuyen-mai/hien-thi";
             } else {
-                khuyenMai.setTrangThai(1);
-                khuyenMai.setTenKhuyenMai(tenKm.getTenKhuyenMai());
-                khuyenMaiService.update(khuyenMai);
+                boolean hasError = false ;
+                // Liên kết khuyến mại mới với các sản phẩm chi tiết được chọn
+                List<SanPhamChiTiet> listKm = sanPhamChiTietReponsitory.dsSpctKm(id);
+                for (SanPhamChiTiet spctt : listKm) {
+                    // Lấy sản phẩm chi tiết từ cơ sở dữ liệu (hoặc qua service)
+                    SanPhamChiTiet spct = sanPhamChiTietReponsitory.getReferenceById(spctt.getId());
+                    if (spct.getGiaBan() < khuyenMai.getGiaTri() && loaiKhuyenMai.equals("product")) {
+                        model.addAttribute("errors", " Giá trị khuyến mại theo giá tiền không hơn giá bán ");
+                        hasError = true;
+                    }
+                }
+                if (hasError){
+                    model.addAttribute("errors", " Giá trị khuyến mại theo giá tiền không hơn giá bán ");
+                }else {
+                    khuyenMai.setTrangThai(1);
+                    khuyenMai.setTenKhuyenMai(tenKm.getTenKhuyenMai());
+                    khuyenMaiService.update(khuyenMai);
+                }
             }
         }
         if (khuyenMai.getNgayKetThuc().before(new Date())) {

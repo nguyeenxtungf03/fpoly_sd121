@@ -160,7 +160,7 @@
                     <div class="col-md-12 mb-3">
                         <label for="discountValue">Giá Trị Khuyến Mại:</label>
                         <input placeholder="Nhập giá trị khuyến mại" name="giaTri" min="1" value="${km.giaTri}"
-                               type="number" max="10000000"
+                               type="number" max="100000000"
                                class="form-control" id="discountValue" required>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -408,7 +408,7 @@
         // Kiểm tra xem radio "VNĐ" đã được chọn hay không
         if (vndRadio.checked) {
             // Nếu đã chọn, xóa giới hạn giá trị
-            discountInput.max = 10000000;
+            discountInput.max = 100000000;
         } else if (percentageRadio.checked) {
             // Nếu đã chọn radio "%", áp dụng giới hạn giá trị là 100
             discountInput.max = 100;

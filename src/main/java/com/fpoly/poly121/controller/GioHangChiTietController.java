@@ -68,9 +68,6 @@ public class GioHangChiTietController {
     private  LichSuDonHangRepository lichSuDonHangRepository;
 
     @Autowired
-    private SanPhamChiTietReponsitory sanPhamChiTietReponsitory;
-
-    @Autowired
     private GHNService ghnService;
 
 
