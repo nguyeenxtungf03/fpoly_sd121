@@ -27,7 +27,7 @@
     <div class="container">
         <form method="get" action="/san-pham-chi-tiet/bo-loc-san-pham" class="filter-form">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label>Sản phẩm</label>
                     <select id="idSanPham" name="idSanPham" class="form-control">
                         <option value="">--Tất cả--</option>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-md-2">
                     <label>Trạng thái</label>
-                    <select name="trangThai" class="form-control">
+                    <select name="trangThai" class="form-select form-select-sm" >
                         <option value="">--Tất cả--</option>
                         <option ${trangThai == 0 ?'selected' :''} value="0">Hoạt động</option>
                         <option ${trangThai == 1 ?'selected' :''} value="1">Không hoạt động</option>
@@ -104,7 +104,12 @@
             <tbody>
             <c:forEach items="${listSpct}" var="spct" varStatus="i">
             <tr>
-                <td>${i.index + 1}</td>
+                <c:if test="${not empty currentPage}" >
+                <td>${i.index + 1 + (10 * ( currentPage - 1) )}</td>
+                </c:if>
+                <c:if test="${empty currentPage}" >
+                    <td>${i.index + 1 }</td>
+                </c:if>
                 <td scope="row" style="text-align: start">${spct.idSanPham.tenSanPham} </td>
                 <td scope="row">${spct.idLoaiSanPham.tenLoai}</td>
                 <td scope="row">${spct.idThuongHieu.tenThuongHieu}</td>
@@ -113,13 +118,13 @@
                 <td scope="row">${spct.trangThai == 0 ? 'Hoạt động' :'Không hoạt động'}</td>
                 <td scope="row">
                     <form method="get" action="/san-pham-chi-tiet/index">
-                        <input type="hidden" name="idSanPham" value="${spct.idSanPham.id}">
+                        <input type="hidden" name="idSp" value="${spct.idSanPham.id}">
                         <input type="hidden" name="idLsp" value="${spct.idLoaiSanPham.id}">
                         <input type="hidden" name="idTh" value="${spct.idThuongHieu.id}">
                         <input type="hidden" name="idCl" value="${spct.idChatLieu.id}">
-                        <button type="submit" class="detail-link btn btn-warning" style="background: white"><i
+                        <input type="hidden" name="trangThai" value="${spct.trangThai}">
+                        <button type="submit" class="btn btn-outline-dark" ><i
                                 class="bi bi-pencil-square"></i></button>
-
                     </form>
 
             </tr>
@@ -135,7 +140,7 @@
                 </div>
                 <c:forEach var="pageNum" begin="1" end="${totalPages}">
                     <div class="${currentPage == pageNum ? 'active' : ''}">
-                        <a href="/san-pham-chi-tiet/hien-thi-sp?page=${pageNum-1}">${pageNum}</a>
+                        <a href="/san-pham-chi-tiet/hien-thi-sp?page=${pageNum-1}"><span ${pageNum == currentPage ? 'style="border: 1px solid #0d6efd ;border-radius: 50%; padding: 5px"' :'' }  >${pageNum}</span></a>
                     </div>
                 </c:forEach>
                 <div class="${currentPage == totalPages ? 'disabled' : ''}">

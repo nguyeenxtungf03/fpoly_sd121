@@ -89,4 +89,5 @@ public interface HoaDonReponsitory extends JpaRepository<HoaDon ,Long> {
 
     List<HoaDon> findByTrangThai(Integer trangThai);
 
+
 }

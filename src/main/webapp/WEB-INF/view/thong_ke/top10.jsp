@@ -19,6 +19,7 @@
     <table id="myTable" class="table table-hover">
         <tdead>
             <tr  style="text-align: center">
+                <td scope="col">Stt</td>
                 <td scope="col">Họ và tên</td>
                 <td scope="col">Số điện thoại</td>
                 <td scope="col">Email</td>
@@ -31,6 +32,7 @@
         <c:forEach items="${listTop10Kh}" var="kh" varStatus="i">
             <c:if test="${not empty kh.trangThai}">
             <tr  style="text-align: center">
+                <td scope="row">${i.index + 1}</td>
                 <td scope="row">${kh.ho} ${kh.tenDem}  ${kh.ten}</td>
                 <td scope="row">${kh.sdt}</td>
                 <td scope="row">${kh.email}</td>

@@ -100,8 +100,6 @@ public class SanPhamChiTiet {
     @Column(name = "ngay_cap_nhat")
     private String ngayCapNhat;
 
-    @NotNull(message = "Không được để trống trạng thái ")
-    @Min(value = 0 ,message = "Không để trống trạng thái ")
     @Column(name = "trang_thai")
     private Long trangThai;
 

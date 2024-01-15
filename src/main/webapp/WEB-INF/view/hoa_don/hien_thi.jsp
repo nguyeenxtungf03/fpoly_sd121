@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
     <link href="/assets/css/styles.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -29,11 +30,11 @@
             <div class="row">
                 <div class="col-md-5">
                     <label>Tìm kiếm </label>
-                    <input class="form-control" value="${key}" name="key">
+                    <input class="form-control" value="${key}" placeholder="Số điện thoại" name="key">
                 </div>
                 <div class="col-md-2">
                     <label>Loại hóa đơn</label>
-                    <select name="loaiHoaDon" class="form-control">
+                    <select name="loaiHoaDon" class="form-select form-select-sm">
                         <option value="">--Tất cả--</option>
                         <option  ${loaiHoaDon == 1 ? 'selected':''} value="1">Mua hàng Online</option>
                         <option ${loaiHoaDon == 2 ? 'selected':''} value="2">Mua hàng tại quầy</option>
@@ -41,13 +42,13 @@
                 </div>
                 <div class="col-md-2">
                     <label>Trạng thái</label>
-                    <select name="trangThai" class="form-control">
+                    <select name="trangThai" class="form-select form-select-sm">
                         <option value="">--Tất cả--</option>
                         <option  ${trangThai == 1 ? 'selected':''} value="1">Chờ xác nhận </option>
                         <option ${trangThai == 2 ? 'selected':''} value="2">Xác nhận </option>
                         <option ${trangThai == 3 ? 'selected':''} value="3">Chờ vận chuyển </option>
                         <option ${trangThai == 4 ? 'selected':''} value="4">Vận chuyển </option>
-                        <option ${trangThai == 5 ? 'selected':''} value="5">Thanh toán </option>
+                        <option ${trangThai == 5 ? 'selected':''} value="5">Đã thanh toán </option>
                         <option ${trangThai == 6 ? 'selected':''} value="6">Hoàn thành </option>
                         <option ${trangThai == 7 ? 'selected':''} value="7">Hủy</option>
                     </select>
@@ -56,11 +57,11 @@
             <div class="row">
                 <div class="col-md-5">
                     <label>Ngày bắt đầu</label>
-                    <input class="form-control" name="dateBd" type="date" value="${dateBd}">
+                    <input class="form-control" name="dateBd" type="datetime-local" value="<fmt:formatDate value="${dateBd}" pattern = "yyyy-MM-dd'T'HH:mm"></fmt:formatDate>">
                 </div>
                 <div class="col-md-5">
                     <label>Ngày kết thúc</label>
-                    <input class="form-control" name="dateKt" type="date" value="${dateKt}">
+                    <input class="form-control" name="dateKt" type="datetime-local" value="<fmt:formatDate value="${dateKt}" pattern = "yyyy-MM-dd'T'HH:mm"></fmt:formatDate>">
                 </div>
             </div>
             <br>
@@ -138,7 +139,7 @@
                 <form method="get" action="/hoa-don/trang-thai">
                     <input type="hidden" name="loaiHoaDon" value="${loaiHoaDon}">
                     <input type="hidden" name="trangThai" value="5">
-                    <button ${trangThai == 5 ? 'style="background: #adb5bd"' :''}  class="form-control" type="submit">Thanh toán</button>
+                    <button ${trangThai == 5 ? 'style="background: #adb5bd"' :''}  class="form-control" type="submit">Đã thanh toán</button>
                 </form>
             </li>
             <li>
@@ -160,28 +161,38 @@
         <table class="table table-hover">
             <thead>
             <tr style="">
-                <td  scope="col">ID</td>
+                <td  scope="col">Stt</td>
                 <td scope="col">Tên khách hàng</td>
                 <td  scope="col">Số điện thoại</td>
                 <td  scope="col">Loại hoá đơn</td>
                 <td  scope="col">Ngày tạo</td>
                 <td  scope="col">Thành tiền</td>
+                <td  scope="col">Trạng thái</td>
                 <td scope="col">Chi tiết</td>
             </tr>
             </thead>
             <tbody>
-            <c:forEach items="${listHd}" var="hd">
+            <c:forEach items="${listHd}" var="hd" varStatus="i">
             <tr>
-                <td scope="row">${hd.id}</td>
+                <td scope="row">${i.index + 1 + (10 * page)}</td>
                 <td scope="row">${hd.nguoiNhan}</td>
                 <td scope="row">${hd.sdtNguoiNhan}</td>
-                <td scope="row"  ${hd.loaiHoaDon == 1 ? ' style="color:#008080  ;font-weight: 600" ':'style="color: #8B475D ;font-weight: 600"'} >${hd.loaiHoaDon == 1 ? 'Mua hàng Online' : 'Mua hàng tại quầy'}</td>
+                <td scope="row">
+                    <span ${hd.loaiHoaDon == 1 ? ' style="background:#008080 "':'style="background: #8B475D "'} class="boderr" >
+                        ${hd.loaiHoaDon == 1 ? 'Mua hàng Online' : 'Mua hàng tại quầy'}
+                    </span>
+                </td>
                 <td scope="row">
                     <fmt:formatDate value="${hd.ngayTao}" pattern="dd/MM/yyyy HH:mm:ss" />
                 </td>
                 <td scope="row"><fmt:formatNumber value="${hd.thanhTien}" pattern="##,###,###"></fmt:formatNumber> ₫
                 </td>
-
+                <td  scope="row">
+                    <span class="boderr"
+                        ${hd.trangThai == 1 ? 'style="background: #ffc720"' : hd.trangThai == 2 ? 'style="background: #0d6efd"' : hd.trangThai == 3 ? 'style="background: #0d6efd"' : hd.trangThai == 4 ? 'style="background: #0d6efd"' : hd.trangThai == 5 ? 'style="background: #0d6efd"' : hd.trangThai == 6 ? 'style="background: #34ce57"' : hd.trangThai == 7 ? 'style="background: red"':''}>
+                        ${hd.trangThai == 1 ? 'Chờ xác nhận' : hd.trangThai == 2 ? 'Xác nhận' : hd.trangThai == 3 ? 'Chờ vận chuyển' : hd.trangThai == 4 ? 'Vận chuyển' : hd.trangThai == 5 ? 'Đã thanh toán' : hd.trangThai == 6 ? 'Hoàn thành' : hd.trangThai == 7 ? 'Hủy' :  ''}
+                    </span>
+                </td>
                 <td>
                     <a style="text-decoration: none ;color: #c8cbcf "
                        href="/hoa-don/searchHDCT?idHD=${hd.id}"><i class="fas fa-info-circle"></i></a>
@@ -199,13 +210,13 @@
                 <c:if test="${page > 0}">
                     <button class="btn btn-outline-success" type="button"><a class="navbar-brand"
                                                                              href="?page=${page - 1 }">Trang
-                        truoc</a></button>
+                        trước</a></button>
                 </c:if>
             </div>
             <div>
                 <c:if test="${ empty param.keyword}">
                     <c:forEach begin="0" end="${page1 - 1}" varStatus="i">
-                        <button class="btn btn-outline-success"><a class="navbar-brand"
+                        <button ${i.index == page ?'style="background: #198754 ; color: white"' :''}  class="btn btn-outline-success"><a class="navbar-brand"
                                                                    href="/hoa-don/hien-thi?page=${i.index}">${i.index + 1}</a>
                         </button>
                     </c:forEach>
@@ -232,6 +243,14 @@
 
     body {
         font-family: 'Arial', sans-serif;
+    }
+    .boderr{
+        border: 1px solid #1e1e1e ;
+        padding: 5px 10px 5px 10px;
+        border-radius: 200px;
+        color: white;
+        font-weight: 300;
+        font-size: 12px;
     }
 
     /* Shoppe-style table */

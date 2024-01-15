@@ -15,6 +15,8 @@ public interface HoaDonChiTietReponsitory extends JpaRepository<HoaDonChiTiet, L
     @Query("select hdct from HoaDonChiTiet hdct where hdct.idHoaDon = :idHD")
     List<HoaDonChiTiet> searchidHd(HoaDon idHD);
 
+    @Query("select hdct from HoaDonChiTiet hdct where hdct.idSanPhamChiTiet.id = :idSpct")
+    List<HoaDonChiTiet> findAllByIdSanPhamChiTiet(Long idSpct);
 
     @Query("SELECT hdct from HoaDonChiTiet  hdct where hdct.ngayTao >= :dateBd and hdct.ngayTao <= :dateKt and hdct.idHoaDon.trangThai <> 7 and hdct.idHoaDon.trangThai <> 1")
     List<HoaDonChiTiet> searchHDCT(Date dateBd, Date dateKt);
