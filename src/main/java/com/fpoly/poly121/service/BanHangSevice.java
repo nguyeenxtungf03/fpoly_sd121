@@ -2,16 +2,12 @@ package com.fpoly.poly121.service;
 
 import com.fpoly.poly121.constant.InvoiceStatus;
 import com.fpoly.poly121.dto.response.SanPhamResponse;
-import com.fpoly.poly121.model.HoaDon;
-import com.fpoly.poly121.model.HoaDonChiTiet;
-import com.fpoly.poly121.model.SanPhamChiTiet;
-import com.fpoly.poly121.repository.HoaDonChiTietReponsitory;
-import com.fpoly.poly121.repository.HoaDonReponsitory;
-import com.fpoly.poly121.repository.SanPhamChiTietReponsitory;
-import com.fpoly.poly121.repository.TaiKhoanRepository;
+import com.fpoly.poly121.model.*;
+import com.fpoly.poly121.repository.*;
 import com.fpoly.poly121.utils.SecurityUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +27,8 @@ public class BanHangSevice {
     private final HoaDonReponsitory hoaDonRepository;
     private final HoaDonChiTietReponsitory hoaDonChiTietRepository;
     private final TaiKhoanRepository taiKhoanRepository;
+    private final KhachHangRepository khachHangRepository;
+    private final LichSuDonHangRepository lichSuDonHangRepository;
 
     public List<SanPhamResponse> getListGioHang(HttpSession session) {
         List <SanPhamResponse> result = (List<SanPhamResponse>) session.getAttribute("listSpr");
@@ -130,6 +128,17 @@ public class BanHangSevice {
         hoaDon.setNgayTao(new Date());
         hoaDon.setLoaiHoaDon(2L);
         hoaDon = hoaDonRepository.save(hoaDon);
+
+        String tk = SecurityUtil.getUsernameLogin();
+        KhachHang kh = khachHangRepository.findIdKhachHangByTaiKhoan(tk);
+        LichSuDonHang ls = new LichSuDonHang();
+        ls.setNgayTao(new Date());
+        ls.setNguoiTao(kh.getHo() + " " + kh.getTenDem() + " " + kh.getTen());
+        ls.setIdDonHang(hoaDon.getId());
+        ls.setTrangThaiDonHang(6L);
+        ls.setGhiChu("Đã thanh toán");
+        lichSuDonHangRepository.save(ls);
+
         List<SanPhamChiTiet> listSanPhamChiTiet = sanPhamChiTietRepository.findByIdIn(listSpr.stream().map(SanPhamResponse::getIdSpct).collect(Collectors.toList()));
         Map<Long, SanPhamChiTiet> mapIdSpct = listSanPhamChiTiet.stream().collect(Collectors.toMap(SanPhamChiTiet::getId, Function.identity()));
         List<HoaDonChiTiet> listHoaDonChiTiet = new ArrayList<>();

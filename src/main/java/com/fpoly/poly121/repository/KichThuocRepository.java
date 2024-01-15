@@ -18,8 +18,8 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, Long> {
     @Query("select spct.idKichThuoc from SanPhamChiTiet  spct where spct.idSanPham.id = :idSanPham ")
     List<KichThuoc> findKichThuocBySanPham(Long idSanPham);
 
-    @Query("select spct.idKichThuoc from SanPhamChiTiet  spct where spct.idSanPham.id = :idSanPham  and spct.idMauSac.id = :idMauSac")
-    List<KichThuoc> findKichThuocBySanPhamAnhMauSac(Long idSanPham , Long idMauSac);
+    @Query("select spct.idKichThuoc from SanPhamChiTiet  spct where spct.idSanPham.id = :idSanPham  and spct.idMauSac.id = :idMauSac and spct.idLoaiSanPham.id =:idLsp and spct.idThuongHieu.id = :idTh and spct.idChatLieu.id = :idCl and spct.trangThai = 0")
+    List<KichThuoc> findKichThuocBySanPhamAnhMauSac(Long idSanPham , Long idMauSac,  Long idLsp,  Long idTh, Integer idCl);
 
     @Query("select sp from KichThuoc  sp where sp.tenKichThuoc = :tenKichThuoc")
     KichThuoc tenKt(String  tenKichThuoc);

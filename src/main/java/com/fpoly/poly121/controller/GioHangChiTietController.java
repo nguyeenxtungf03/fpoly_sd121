@@ -58,6 +58,9 @@ public class GioHangChiTietController {
     @Autowired
     private GioHangRepository gioHangRepository;
 
+    @Autowired
+    private  LichSuDonHangRepository lichSuDonHangRepository;
+
 
     @GetMapping("hien-thi")
     public String getAll(Model model) {
@@ -87,12 +90,19 @@ public class GioHangChiTietController {
             String tenSp = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
             Long soLuongSpCon = gioHangChiTietDto.getIdSanPhamChiTiet().getSoLuong();
             Long soLuongSpGioHang = gioHangChiTietDto.getSoLuong();
+            String sanPham = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
+            String mauSac = spct.getIdMauSac().getTenMauSac();
+            String kichThuoc = spct.getIdKichThuoc().getTenKichThuoc();
+            Long trangThai = spct.getTrangThai();
 
             if (soLuongSpCon < soLuongSpGioHang && soLuongSpCon > 0) {
                 model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) chỉ còn " + soLuongSpCon);
             }
             if (soLuongSpCon < 1) {
                 model.addAttribute("errors", "Số lượng sản phẩm ( " + tenSp + " ) đã bán hết ! ");
+            }
+            if (trangThai != 0L){
+                model.addAttribute("errors", "Sản phẩm ( " + sanPham + " [ " + mauSac + " - " + kichThuoc + " ] " + " ) đã ngừng kinh doanh !");
             }
         }
 
@@ -380,8 +390,19 @@ public class GioHangChiTietController {
                 SanPhamChiTiet spct = gioHangChiTietDto.getIdSanPhamChiTiet();
                 Long soLuongMua = gioHangChiTietDto.getSoLuong();
                 String sanPham = gioHangChiTietDto.getIdSanPhamChiTiet().getIdSanPham().getTenSanPham();
+                String mauSac = spct.getIdMauSac().getTenMauSac();
+                String kichThuoc = spct.getIdKichThuoc().getTenKichThuoc();
                 Long giaBan = gioHangChiTietDto.getIdSanPhamChiTiet().getGiaBan();
+                Long trangThai = spct.getTrangThai();
                 KhuyenMai khuyenMai = gioHangChiTietDto.getIdSanPhamChiTiet().getIdKhuyenMai();
+
+                if (trangThai != 0L){
+                    model.addAttribute("errors", "Sản phẩm ( " + sanPham + " [ " + mauSac + " - " + kichThuoc + " ] " + " ) đã ngừng kinh doanh !");
+                    hoaDonReponsitory.delete(hoaDon);
+                    model.addAttribute("listGhct", listGhctDto);
+                    model.addAttribute("newDate", new Date());
+                    return "gio_hang/hien_thi";
+                }
 
                 Date ngayHienTai = new Date();
                 // check khuyyen mai
@@ -452,9 +473,7 @@ public class GioHangChiTietController {
                     hoaDonReponsitory.delete(hoaDon);
                     hasError = true;
                     break; // Kết thúc vòng lặp khi có lỗi
-                }
-
-                if (tongSoLuongMua >= 21) {
+                }if (tongSoLuongMua >= 21) {
                     model.addAttribute("listGhct", listGhctDto);
                     // thong bao neu so luong mua >= 100
                     model.addAttribute("errors", "Tổng số lượng mua không quá 20 sản phẩm !");
@@ -514,6 +533,14 @@ public class GioHangChiTietController {
                 hoaDonReponsitory.save(hoaDon);
                 // Luu tat ca cac san pham vao hoa don chi tiet
                 hoaDonChiTietReponsitory.saveAll(hoaDonChiTietList);
+                // luu lich su hoa don
+                LichSuDonHang ls = new LichSuDonHang();
+                ls.setNgayTao(new Date());
+                ls.setIdDonHang(hoaDon.getId());
+                ls.setTrangThaiDonHang(1L);
+                ls.setGhiChu("Chưa thanh toán");
+                lichSuDonHangRepository.save(ls);
+
                 // xoa gio hang sau khi thanh toan thanh cong
                 if (tk.isEmpty()) {
                     try {

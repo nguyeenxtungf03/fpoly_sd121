@@ -1,6 +1,7 @@
 package com.fpoly.poly121.repository;
 
 
+import com.fpoly.poly121.dto.request.SanPhamDto;
 import com.fpoly.poly121.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,21 +35,28 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
     SanPhamChiTiet sp(String tenSanPham, String tenLoai, String tenMauSac, String tenKichThuoc, String tenThuongHieu, String tenChatLieu );
 
 
-    @Query("SELECT spct FROM SanPhamChiTiet spct where spct.idSanPham.id = :idSp and spct.idLoaiSanPham.id =:idLsp and spct.idThuongHieu.id = :idTh and spct.idChatLieu.id = :idCl ")
-    List<SanPhamChiTiet> findSanPhamChiTietByIdSanPham(Long idSp , Long idLsp , Long idTh , Integer idCl);
+    @Query("SELECT spct FROM SanPhamChiTiet spct where spct.idSanPham.id = :idSp and spct.idLoaiSanPham.id =:idLsp and spct.idThuongHieu.id = :idTh and spct.idChatLieu.id = :idCl and spct.trangThai = :trangThai")
+    List<SanPhamChiTiet> findSanPhamChiTietByIdSanPham(Long idSp , Long idLsp , Long idTh , Integer idCl , Long trangThai);
 
-
+    @Query("SELECT spct FROM SanPhamChiTiet spct where spct.idSanPham = :idSp and spct.idLoaiSanPham =:idLsp and spct.idThuongHieu = :idTh and spct.idChatLieu = :idCl and spct.trangThai = :trangThai")
+    List<SanPhamChiTiet> findSanPhamChiTiet(SanPham idSp , LoaiSanPham idLsp , ThuongHieu idTh , ChatLieu idCl , Long trangThai);
 
     @Query("SELECT spct FROM SanPhamChiTiet spct " +
-            "WHERE spct.idMauSac.id = :idMs AND spct.idKichThuoc.id = :idKt AND spct.idSanPham.id = :idSp")
+            "WHERE spct.idMauSac.id = :idMs AND spct.idKichThuoc.id = :idKt AND spct.idSanPham.id = :idSp and spct.idLoaiSanPham.id =:idLsp and spct.idThuongHieu.id = :idTh and spct.idChatLieu.id = :idCl  AND spct.trangThai = 0")
     List<SanPhamChiTiet> findSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(@Param("idSp") Long idSp,
                                                                                 @Param("idMs") Long idMs,
-                                                                                @Param("idKt") Long idKt);
+                                                                                @Param("idKt") Long idKt,
+                                                                                @Param("idLsp") Long idLsp,
+                                                                                @Param("idTh") Long idTh,
+                                                                                @Param("idCl") Integer idCl);
 
     default SanPhamChiTiet findRandomSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(@Param("idSp") Long idSp,
                                                                                         @Param("idMs") Long idMs,
-                                                                                        @Param("idKt") Long idKt) {
-        List<SanPhamChiTiet> resultList = findSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(idSp, idMs, idKt);
+                                                                                        @Param("idKt") Long idKt,
+                                                                                        @Param("idLsp") Long idLsp,
+                                                                                        @Param("idTh") Long idTh,
+                                                                                        @Param("idCl") Integer idCl) {
+        List<SanPhamChiTiet> resultList = findSanPhamChiTietByIdSanPhamAndIdKichThuocAndIdMauSac(idSp, idMs, idKt,idLsp,idTh,idCl);
 
         if (!resultList.isEmpty()) {
             int randomIndex = new Random().nextInt(resultList.size());
@@ -68,7 +76,8 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
 
     @Query("select spct.idSanPham , spct.idLoaiSanPham , spct.idThuongHieu,spct.idChatLieu , sum( spct.soLuong ) as SoLuong ,spct.trangThai\n" +
             "from SanPhamChiTiet spct \n" +
-            "group by spct.idSanPham , spct.idLoaiSanPham , spct.idThuongHieu , spct.idChatLieu ,spct.trangThai")
+            "group by spct.idSanPham , spct.idLoaiSanPham , spct.idThuongHieu , spct.idChatLieu ,spct.trangThai ,spct.idSanPham.id"+
+            " order by spct.idSanPham.id desc ")
     Page<Object[]> listSp(Pageable pageable);
 
     @Query("select spct\n" +
@@ -90,12 +99,6 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
             "from SanPhamChiTiet ct\n" +
             "where ct.idSanPham.id = :idSanPham and ct.idLoaiSanPham.id = :idLoaiSanPham and ct.idMauSac.id = :idMauSac and ct.idKichThuoc.id = :idKichThuoc and ct.idThuongHieu.id = :idThuongHieu and ct.idChatLieu.id = :idChatLieu  ")
     SanPhamChiTiet spCheck(Long idSanPham, Long idLoaiSanPham, Long idMauSac, Long idKichThuoc, Long idThuongHieu, Integer idChatLieu );
-
-
-    @Query("select ct  \n" +
-            "from SanPhamChiTiet ct\n" +
-            "where ct.idSanPham.id = :id ")
-    SanPhamChiTiet spCheckId(Long id );
 
 
     @Query("SELECT ct " +
@@ -124,6 +127,23 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
             @Param("toiThieu") Long toiThieu,
             @Param("toiDa") Long toiDa);
 
+    @Query("SELECT ct.idSanPham , ct.idLoaiSanPham , ct.idThuongHieu,ct.idChatLieu , sum( ct.soLuong ) as SoLuong ,ct.trangThai " +
+            "FROM SanPhamChiTiet ct " +
+            "WHERE (:idSanPham IS NULL OR ct.idSanPham = :idSanPham) " +
+            "AND (:idLoai IS NULL OR ct.idLoaiSanPham = :idLoai) " +
+            "AND (:idThuongHieu IS NULL OR ct.idThuongHieu = :idThuongHieu) " +
+            "AND (:idChatLieu IS NULL OR ct.idChatLieu = :idChatLieu) " +
+            "AND (:trangThai IS NULL OR ct.trangThai = :trangThai) " +
+            "group by ct.idSanPham , ct.idLoaiSanPham , ct.idThuongHieu , ct.idChatLieu ,ct.trangThai")
+    List<Object[]> boLocSanPham(
+            @Param("idSanPham") SanPham idSanPham,
+            @Param("idLoai") LoaiSanPham idLoai,
+            @Param("idThuongHieu") ThuongHieu idThuongHieu,
+            @Param("idChatLieu") ChatLieu idChatLieu,
+            @Param("trangThai") Long trangThai);
+
+
+
 
     @Query("select hdct from HoaDonChiTiet hdct where hdct.idHoaDon.id = :idHd   ")
     List<HoaDonChiTiet> findHdctByidHd(Long idHd );
@@ -134,6 +154,16 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
 
     List<SanPhamChiTiet> findByIdIn(List<Long> ids);
 
+    SanPhamChiTiet findFirstByidSanPhamAndIdMauSacAndIdLoaiSanPhamAndIdThuongHieuAndIdChatLieuAndTrangThai(SanPham idSanPham, MauSac idMauSac , LoaiSanPham idLoaiSanPham ,  ThuongHieu idThuonghieu , ChatLieu idChatLieu , Long trangThai );
+
+    @Modifying
+    @Query("update SanPhamChiTiet ct \n" +
+            " set  ct.soLuong = :soLuong , ct.giaBan = :giaBan , ct.moTa = :moTa , ct.trangThai = :trangThai \n" +
+            "where ct.id = :idSpct ")
+    void capNhatSpct(@Param("soLuong") Long soLuong,@Param("giaBan") Long giaBan,@Param("moTa") String moTa,@Param("trangThai") Long trangThai,@Param("idSpct") Long idSpct );
+
+    @Query("select ct from SanPhamChiTiet  ct where ct.id = :id")
+    SanPhamChiTiet findSpctByIdSpct(Long id);
 }
 
 

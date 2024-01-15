@@ -3,6 +3,7 @@ package com.fpoly.poly121.repository;
 
 import com.fpoly.poly121.model.GioHang;
 import com.fpoly.poly121.model.GioHangChiTiet;
+import com.fpoly.poly121.model.HoaDonChiTiet;
 import com.fpoly.poly121.model.SanPhamChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -58,6 +59,9 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
 
     @Query("select spct.soLuong from SanPhamChiTiet spct where  spct.id = :idSanPhamChiTiet  ")
     Long soLuongSpCon(Long idSanPhamChiTiet);
+
+    @Query("select hdct from GioHangChiTiet hdct where hdct.idSanPhamChiTiet.id = :idSpct")
+    List<GioHangChiTiet> findAllByIdSanPhamChiTiet(Long idSpct);
 
 
 }

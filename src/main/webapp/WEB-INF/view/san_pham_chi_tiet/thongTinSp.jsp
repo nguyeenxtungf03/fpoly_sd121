@@ -153,7 +153,7 @@
 <!-- ***** Header Area End ***** -->
 
 <!-- ***** Main Banner Area Start ***** -->
-<div style="padding-top: 23px" id="top">
+<div style="padding-top: 40px" id="top">
 
 </div>
 <!-- ***** Main Banner Area End ***** -->
@@ -164,26 +164,35 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-1">
+                <c:forEach items="${listAnh}" var="sp" step="4" begin="0" end="16" >
+                    <c:if test="${!sp.anhSanPham.equals(spct.anhSanPham)}">
+                <img style="width: 100%  ; margin-bottom: 5px" src="/assets/images/imgSp/${sp.anhSanPham}" alt="">
+                </c:if>
+                </c:forEach>
+            </div>
+            <div class="col-lg-6">
                 <div class="left-images">
-                    <div class="position-relative">
-                        <img src="/assets/images/imgSp/${spct.anhSanPham}" alt="">
+                    <div  class="position-relative" >
+                        <img style="width: 70%" src="/assets/images/imgSp/${spct.anhSanPham}" alt="">
                         <c:if test="${spct.idKhuyenMai.loaiKhuyenMai != null and spct.idKhuyenMai.ngayBatDau < newDate}">
                                         <span class="badge badge-danger position-absolute"
-                                              style="top: 10px;left: 290px">
-                                            <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'product' && spct.idKhuyenMai.trangThai == 1}">Khuyến mãi ${spct.idKhuyenMai.giaTri} VNĐ</c:if>
-                                            <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'percentage' && spct.idKhuyenMai.trangThai == 1}">Khuyến mãi ${spct.idKhuyenMai.giaTri} %</c:if>
+                                              style="top: 10px;left: 250px ; font-weight: 400">
+                                            <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'product' && spct.idKhuyenMai.trangThai == 1}">Khuyến mại ${spct.idKhuyenMai.giaTri} VNĐ</c:if>
+                                            <c:if test="${spct.idKhuyenMai.loaiKhuyenMai == 'percentage' && spct.idKhuyenMai.trangThai == 1}">Khuyến mại ${spct.idKhuyenMai.giaTri} %</c:if>
                                         </span>
                         </c:if>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-5">
                 <div class="right-content">
-                    <h4>
+                    <small style="font-weight: 700 ;font-size: 23px">
+                        <fmt:formatDate var="newDate2" value="${newDate}" pattern="yyyy-MM-dd"></fmt:formatDate>
+                        <c:if test="${newDate2 == spct.ngayTao}"><small style="color: red ; font-weight: 900 ">( New )</small> </c:if>
                         ${spct.idSanPham.tenSanPham}
 
-                    </h4>
+                    </small>
                     <span class="price">
                           <div class="d-flex">
                                         <span   ${spct.idKhuyenMai.loaiKhuyenMai  == null or spct.idKhuyenMai.ngayBatDau > newDate ?'style=" text-decoration: none"':'style=" text-decoration: line-through;color : red;margin-right: 10px ; font-size : 15px"'}><fmt:formatNumber value="${spct.giaBan}" pattern="##,###,###"></fmt:formatNumber> VNĐ </span>
@@ -207,7 +216,7 @@
                         <form action="/trang-chu/chi-tiet" method="get">
                         <span>Màu sắc :  <c:forEach items="${listms}" var="ms">
                             <input name="idSanPham" type="hidden" value="${spct.idSanPham.id}">
-                            <strong style="margin : 0 10px 0 5px ; font-weight: 500">   <input id="ms${ms.tenMauSac}"
+                            <strong style="margin : 0 5px 0 5px ; font-weight: 500">   <input id="ms${ms.tenMauSac}"
                                                                                                type="radio"
                                                                                                name="idMauSac"
                                                                                                onchange="updateSelection()"
@@ -223,6 +232,9 @@
                                        for="kt${kt.tenKichThuoc}">${kt.tenKichThuoc}</label>
                                </strong>
                             </c:forEach>
+                                <input  name="idLoaiSanPham" type="hidden" value="${spct.idLoaiSanPham.id}">
+                                <input name="idThuongHieu"  type="hidden" value="${spct.idThuongHieu.id}">
+                                <input name="idChatLieu"  type="hidden" value="${spct.idChatLieu.id}">
                             <button type="submit" style="display: none" id="submitButton">Cập nhật</button>
                                     </span>
                         </form>
@@ -332,7 +344,7 @@
 </footer>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true"
-     data-delay="1000" style="position: fixed; top: 20px; right: 20px;    z-index: 1051;background: white">
+     data-delay="1000" style="position: fixed; top: 20px; right: 20px;  z-index: 1051;background: white">
     <div class="toast-body" >
 
     </div>

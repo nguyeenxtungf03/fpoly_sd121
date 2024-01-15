@@ -22,7 +22,7 @@
 </div>
 <div class="container" style="width: 85% ; float: right ">
     <div class="capNhat">
-        <a href="/san-pham-chi-tiet/index?idSanPham=${spct.idSanPham.id}&idLsp=${spct.idLoaiSanPham.id}&idTh=${spct.idThuongHieu.id}&idCl=${spct.idChatLieu.id}" style="text-decoration: none ;color: black "> ↩
+        <a href="/san-pham-chi-tiet/index?idSp=${spct.idSanPham.id}&idLsp=${spct.idLoaiSanPham.id}&idTh=${spct.idThuongHieu.id}&idCl=${spct.idChatLieu.id}&trangThai=${spct.trangThai}" style="text-decoration: none ;color: black "> ↩
         Danh sách sản phẩm chi tiết </a> <br>
     <h2 style="text-align: center ; margin-top: 20px">Cập nhât sản phẩm chi tiết </h2>
 
@@ -130,7 +130,7 @@
             </div>
             <div class="col-md-2">
                 <label>Trạng thái</label>
-                <select name="trangThai" class="form-control">
+                <select name="trangThai" class="form-select form-select-sm">
                     <option   ${spct.trangThai == 0 ? 'selected':''} value="0">Hoạt động</option>
                     <option ${spct.trangThai == 1 ? 'selected':''} value="1">Không hoạt động</option>
                 </select>
