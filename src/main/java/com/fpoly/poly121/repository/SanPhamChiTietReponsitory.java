@@ -164,6 +164,13 @@ public interface SanPhamChiTietReponsitory  extends JpaRepository<SanPhamChiTiet
 
     @Query("select ct from SanPhamChiTiet  ct where ct.id = :id")
     SanPhamChiTiet findSpctByIdSpct(Long id);
+
+    @Modifying
+    @Query("update SanPhamChiTiet ct \n" +
+            " set  ct.soLuong = :soLuong , ct.giaBan = :giaBan \n" +
+            "where ct.id = :idSpct ")
+    void capNhatSpctSoLuong( Long soLuong, Long giaBan,Long idSpct );
+
 }
 
 

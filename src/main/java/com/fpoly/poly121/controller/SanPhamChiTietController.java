@@ -276,6 +276,36 @@ public class SanPhamChiTietController {
         return ResponseEntity.ok("Chọn sản phẩm bạn muốn cập nhật !");
     }
 
+    @Transactional
+    @PostMapping("capNhatSoLuong")
+    public ResponseEntity<String> capNhatSoLuong(@RequestParam(required = false) List<Long> checkBox,
+                                          @RequestParam(required = false) List<Long> idSpctUpdate,
+                                          @RequestParam(required = false) List<Long> giaBan,
+                                          @RequestParam(required = false) List<Long> soLuong) {
+        if (checkBox != null) {
+            for (int i = 0; i < idSpctUpdate.size(); i++) {
+                Long idSpctValue = idSpctUpdate.get(i);
+                Long giaBanValue = giaBan.get(i);
+                Long soLuongValue = soLuong.get(i);
+                if (idSpctValue == null || giaBanValue == null || soLuongValue == null ) {
+                    return ResponseEntity.ok("Các ô không được để trống !");
+                }
+                if (giaBanValue <= 0 || soLuongValue <= 0) {
+                    return ResponseEntity.ok("Giá bán và số lượng phải lớn hơn 0");
+                } else {
+                    for (Long checkId : checkBox) {
+                        if (checkId.equals(idSpctValue)) {
+                            sanPhamChiTietReponsitory.capNhatSpctSoLuong(soLuongValue, giaBanValue, idSpctValue);
+                        }
+                    }
+                }
+            }
+            return ResponseEntity.ok("Lưu và cập nhật thành công !");
+        }
+        return ResponseEntity.ok("Chọn sản phẩm bạn muốn cập nhật !");
+    }
+
+
     @PostMapping("delete")
     public String delete(@RequestParam(required = false) Long idSpct,
                          @RequestParam(required = false) SanPham idSanPham ,

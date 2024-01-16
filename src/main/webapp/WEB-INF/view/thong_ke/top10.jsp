@@ -23,7 +23,7 @@
                 <td scope="col">Họ và tên</td>
                 <td scope="col">Số điện thoại</td>
                 <td scope="col">Email</td>
-                <td scope="col">Số lượng mua</td>
+                <td scope="col">Số lượng sản phẩm mua</td>
                 <td scope="col">Tổng chi tiêu</td>
             </tr>
         </tdead>
