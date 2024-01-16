@@ -51,6 +51,7 @@
                         <option ${trangThai == 5 ? 'selected':''} value="5">Đã thanh toán </option>
                         <option ${trangThai == 6 ? 'selected':''} value="6">Hoàn thành </option>
                         <option ${trangThai == 7 ? 'selected':''} value="7">Hủy</option>
+                        <option ${trangThai == 8 ? 'selected':''} value="8">Chờ thanh toán</option>
                     </select>
                 </div>
             </div>
@@ -189,8 +190,8 @@
                 </td>
                 <td  scope="row">
                     <span class="boderr"
-                        ${hd.trangThai == 1 ? 'style="background: #ffc720"' : hd.trangThai == 2 ? 'style="background: #0d6efd"' : hd.trangThai == 3 ? 'style="background: #0d6efd"' : hd.trangThai == 4 ? 'style="background: #0d6efd"' : hd.trangThai == 5 ? 'style="background: #0d6efd"' : hd.trangThai == 6 ? 'style="background: #34ce57"' : hd.trangThai == 7 ? 'style="background: red"':''}>
-                        ${hd.trangThai == 1 ? 'Chờ xác nhận' : hd.trangThai == 2 ? 'Xác nhận' : hd.trangThai == 3 ? 'Chờ vận chuyển' : hd.trangThai == 4 ? 'Vận chuyển' : hd.trangThai == 5 ? 'Đã thanh toán' : hd.trangThai == 6 ? 'Hoàn thành' : hd.trangThai == 7 ? 'Hủy' :  ''}
+                        ${hd.trangThai == 1 ? 'style="background: #ffc720"' : hd.trangThai == 2 ? 'style="background: #0d6efd"' : hd.trangThai == 3 ? 'style="background: #0d6efd"' : hd.trangThai == 4 ? 'style="background: #0d6efd"' : hd.trangThai == 5 ? 'style="background: #0d6efd"' : hd.trangThai == 6 ? 'style="background: #34ce57"' : hd.trangThai == 7 ? 'style="background: red"': hd.trangThai == 8 ? 'style="background: #245C11"' : ''}>
+                        ${hd.trangThai == 1 ? 'Chờ xác nhận' : hd.trangThai == 2 ? 'Xác nhận' : hd.trangThai == 3 ? 'Chờ vận chuyển' : hd.trangThai == 4 ? 'Vận chuyển' : hd.trangThai == 5 ? 'Đã thanh toán' : hd.trangThai == 6 ? 'Hoàn thành' : hd.trangThai == 7 ? 'Hủy' : hd.trangThai == 8 ? 'Chờ thanh toán' :  ''}
                     </span>
                 </td>
                 <td>
