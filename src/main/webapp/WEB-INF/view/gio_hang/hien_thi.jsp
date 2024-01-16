@@ -167,7 +167,7 @@
                 <th scope="col">Sản Phẩm</th>
                 <th scope="col">Số Lượng</th>
                 <th scope="col">Đơn Giá</th>
-                <th scope="col">Thành Tiền</th>
+                <th scope="col">Tổng Tiền</th>
                 <th scope="col">Chức Năng</th>
             </tr>
             </thead>
@@ -318,14 +318,9 @@
             </p>
 
             <c:if test="${not empty listGhct }">
-                Tổng số tiền <span style="font-weight: 600"> : <fmt:formatNumber value="${totalAmount}"
+                Tổng tiền hàng <span style="font-weight: 600"> : <fmt:formatNumber value="${totalAmount}"
                                                                                  pattern="##,###,###"></fmt:formatNumber> ₫
     </span><br>
-                Phí vận chuyển : <span id="shippingFeeDisplay" style="font-weight: 600">0 ₫</span><br>
-                Thành tiền <span style="font-weight: 600"> : <span id="totalAmount"><fmt:formatNumber
-                    value="${totalAmount}"
-                    pattern="##,###,###"></fmt:formatNumber> ₫</span>
-            </span><br>
             </c:if>
         </div>
     </div>
@@ -333,8 +328,8 @@
 <c:if test="${not empty listGhct}">
 <section style="margin-top: 10px" class="section">
     <div class="container">
-        <h2 class="mb-4">Thông tin khách hàng</h2>
-        <form   method="post" action="/gio-hang/thanh-toan">
+        <h2 class="mb-4 mt-5">Thông tin khách hàng</h2>
+        <form method="post" action="/gio-hang/thanh-toan">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="ho"><span style="color: red">*</span> Họ và tên đệm:</label>
@@ -360,31 +355,32 @@
             <div class="form-group">
                 <label for="province"><span style="color: red">*</span> Địa chỉ:</label>
                 <div class="row-12" style="display: flex; justify-content: space-between">
-                    <select class="col-md-4 form-control" name="tinh" id="province" required>
+                    <select class="col-md-4 form-control" name="tinh" id="province" required onchange="loadDistrictSelect()">
+                        <option value="0">Chọn tỉnh thành</option>
                     </select>
-                    <select class="col-md-4 form-control" name="huyen" id="district" required>
-                        <option value="">Chọn quận</option>
+                    <select class="col-md-4 form-control" name="huyen" id="district" required onchange="loadWardSelect()">
+                        <option value="0">Chọn quận huyện</option>
                     </select>
-                    <select class="col-md-3 form-control" name="phuong" id="ward" required>
-                        <option value="">Chọn phường</option>
+                    <select class="col-md-3 form-control" name="phuong" id="ward" required onchange="getTransportFee()">
+                        <option value="0">Chọn phường xã</option>
                     </select>
-                </div>
-                <textarea name="diaChi" style="display: none" id="result" class="form-control" rows="3"
-                          placeholder="Nhập địa chỉ của bạn"
-                >${diaChi}</textarea>
-                <br>
-                <!-- Thêm phần hiển thị giá vận chuyển -->
-                <div class="form-group">
-                    <label for="shippingFeeInput">Phí Vận Chuyển: 0 VNĐ</label>
-                    <input name="phiVanChuyen" style="display: none" value="0" type="text" class="form-control"
-                           id="shippingFeeInput"
-                           readonly>
                 </div>
             </div>
             <label><span style="color: red">*</span> Địa Chỉ Cụ Thể:</label>
+            <textarea name="diaChiNhan" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
+            >${diaChiNhan} </textarea><br>
 
-            <textarea name="diaChiNhan" class="form-control" required rows="3" placeholder="Nhập địa chỉ của bạn"
-            >${diaChiNhan}</textarea><br>
+            <p style="color: #495057; margin-bottom: 16px;"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+            </svg>  Đơn hàng được đóng gói và vận chuyển từ Hà Đông Hà Nội</p>
+            <p style="font-size: 16px; margin: 0 10px;">Tổng Tiền Hàng:   <span style="font-weight: 500; font-size: 18px;"> <fmt:formatNumber value="${totalAmount}" pattern="##,###,###"></fmt:formatNumber> ₫ </span></p>
+            <div id="loading-gif" style="display: none; height: 50px; margin-bottom: 16px;">
+                <img width="32" height="32" src="../../../assets/images/loading.gif" alt="Loading..." style="margin-left: 10px; margin-top: 9px">
+            </div>
+            <div class="form-group" id="fee-mess" style="height: 50px;">
+                <p style="font-size: 16px; margin: 0 10px;">Phí Vận Chuyển:   <span id="transport-fee" style="font-weight: 500; font-size: 18px;"></span></p>
+                <p style="font-size: 16px; margin: 0 10px;">Thành Tiền:   <span id="total_amount" style="font-weight: 500; font-size: 18px;"></span></p>
+            </div>
             <span style="color: red">${notBlank}</span>
             <c:if test="${ empty notBlank}">
             <div class="text-left">
@@ -482,7 +478,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
         integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="/assets/js/index.js"></script>
+<script src="/assets/js/address-handle.js"></script>
 
 <!-- jQuery -->
 <script src="/assets/js/jquery-2.1.0.min.js"></script>
@@ -541,6 +537,12 @@
         });
     });
 
+    document.addEventListener("DOMContentLoaded", function() {
+        if ('${err}') {
+            window.alert('${errMess}')
+        }
+    });
+
 </script>
 
 
@@ -564,6 +566,118 @@
         } else {
             document.getElementById("error-message").innerHTML = "";
         }
+    }
+</script>
+
+// Call API GHN
+<script>
+    const provinceSelect = document.getElementById('province');
+    const districtSelect = document.getElementById('district');
+    const wardSelect = document.getElementById('ward');
+
+    console.log("load provinces...")
+    fetch('/ghn/province')
+        .then(response => response.json())
+        .then(result => {
+            const data = result.data;
+
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.text = item.tenTinh;
+                provinceSelect.appendChild(option);
+                console.log(item)
+            });
+        })
+        .catch(error => console.error('Lỗi khi gọi API getListProvince: ', error));
+    console.log("load provinces done")
+
+    function loadDistrictSelect() {
+        console.log("load districts...")
+        transportFeeSpan.innerText = '';
+        totalAmountSpan.innerText = '';
+        districtSelect.innerHTML = '';
+        wardSelect.innerHTML = '';
+        const optionDistrict = document.createElement('option');
+        optionDistrict.value = '0';
+        optionDistrict.text = 'Chọn quận huyện';
+        const optionWard = document.createElement('option');
+        optionWard.value = '0';
+        optionWard.text = 'Chọn phường xã';
+        districtSelect.appendChild(optionDistrict);
+        wardSelect.appendChild(optionWard);
+        const idProvince = provinceSelect.value
+        if (idProvince === '0') return
+        fetch('/ghn/district/' + idProvince)
+            .then(response => response.json())
+            .then(result => {
+                const data = result.data;
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.text = item.tenHuyen;
+                    districtSelect.appendChild(option);
+                    console.log(option)
+                });
+            })
+            .catch(error => console.error('Lỗi khi gọi API getListDistrict: ', error));
+        console.log("load districts done")
+    }
+
+    function loadWardSelect() {
+        console.log("load wards...")
+        transportFeeSpan.innerText = '';
+        totalAmountSpan.innerText = '';
+        wardSelect.innerHTML = '';
+        const option = document.createElement('option');
+        option.value = '0';
+        option.text = 'Chọn phường xã';
+        wardSelect.appendChild(option);
+        const idDistrict = districtSelect.value
+        if (idDistrict === '0') return
+        fetch('/ghn/ward/' + idDistrict)
+            .then(response => response.json())
+            .then(result => {
+                const data = result.data;
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.maXa;
+                    option.text = item.tenXa;
+                    wardSelect.appendChild(option);
+                    console.log(item)
+                });
+            })
+            .catch(error => console.error('Lỗi khi gọi API getListWard: ', error));
+        console.log("load wards done")
+    }
+
+    const transportFeeSpan = document.getElementById('transport-fee');
+    const totalAmountSpan = document.getElementById('total_amount');
+    const feeParameter = document.getElementById('fee-mess');
+    const loadingGif = document.getElementById('loading-gif');
+    function getTransportFee() {
+        loadingGif.style.display = 'none'
+        feeParameter.style.display = 'none'
+        const wardCode = wardSelect.value
+        const idDistrict = districtSelect.value
+        if (wardCode === '0' || idDistrict === '0') return
+        loadingGif.style.display = 'block'
+        fetch('/ghn/transport-fee?idHuyen=' + idDistrict + '&maXa=' + wardCode)
+            .then(response => response.json())
+            .then(result => {
+                const data = result.data;
+                loadingGif.style.display = 'none'
+                feeParameter.style.display = 'block'
+                var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+                var formattedAmount = formatter.format(data.tongPhi);
+                var thanhTien = data.tongPhi + ${totalAmount};
+                var formattedTotalAmount = formatter.format(thanhTien);
+                totalAmountSpan.innerText = formattedTotalAmount;
+                transportFeeSpan.innerText = formattedAmount;
+            })
+            .catch(error => console.error('Lỗi khi gọi API getTransportFee: ', error));
     }
 </script>
 

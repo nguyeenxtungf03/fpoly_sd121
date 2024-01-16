@@ -31,7 +31,7 @@
         <div class="col-md-12 mb-3" >
             <label for="discountValue">Giá trị</label>
             <c:if test="${km.loaiKhuyenMai == 'product'}">
-            <input value="${km.giaTri}" name="giaTri" type="number" min="1" max="10000000" class="form-control" id="discountValue"
+            <input value="${km.giaTri}" name="giaTri" type="number" min="1" max="100000000" class="form-control" id="discountValue"
                    required>
             </c:if>
 
@@ -179,7 +179,7 @@
         var percentageRadio = document.querySelector('input[name="loaiKhuyenMai"][value="percentage"]');
 
         if (vndRadio.checked) {
-            discountInput.max = 10000000;
+            discountInput.max = 100000000;
         } else if (percentageRadio.checked) {
             discountInput.max = 100;
         }

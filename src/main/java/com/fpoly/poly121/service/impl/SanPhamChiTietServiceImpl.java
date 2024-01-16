@@ -71,7 +71,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
 
         try {
             String fileName = file.getOriginalFilename();
-            String absolutePath = FileUtils.getFile("../../../../DATN/fpoly_sd121/src/main/webapp/", relativePath).getCanonicalPath();
+            String absolutePath = FileUtils.getFile("../../../../DA/src/main/webapp/", relativePath).getCanonicalPath();
             File uploadDir = new File(absolutePath);
             FileUtils.forceMkdir(uploadDir);
             uploadDir.setWritable(true);

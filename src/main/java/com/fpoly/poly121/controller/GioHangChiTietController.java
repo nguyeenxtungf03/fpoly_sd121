@@ -2,9 +2,13 @@ package com.fpoly.poly121.controller;
 
 
 import com.fpoly.poly121.dto.request.GioHangChiTietDto;
+import com.fpoly.poly121.dto.response.HuyenResponse;
+import com.fpoly.poly121.dto.response.TinhResponse;
+import com.fpoly.poly121.dto.response.XaResponse;
 import com.fpoly.poly121.model.*;
 import com.fpoly.poly121.repository.*;
 import com.fpoly.poly121.security.dto.TaiKhoan;
+import com.fpoly.poly121.service.GHNService;
 import com.fpoly.poly121.service.GioHangChiTietService;
 import com.fpoly.poly121.service.SanPhamChiTietService;
 import com.fpoly.poly121.service.impl.SanPhamChiTietServiceImpl;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,9 +63,47 @@ public class GioHangChiTietController {
 
     @Autowired
     private GioHangRepository gioHangRepository;
-
+  
     @Autowired
     private  LichSuDonHangRepository lichSuDonHangRepository;
+
+    @Autowired
+    private GHNService ghnService;
+
+
+    public static class SecurityAttributesUtil {
+
+        public static void setSecurityAttributes(Model model, TaiKhoanRepository taiKhoanRepository, KhachHangRepository khachHangRepository) {
+            model.addAttribute("isAdmin", SecurityUtil.checkIsAdmin(taiKhoanRepository));
+            model.addAttribute("isStaff", SecurityUtil.checkIsStaff(taiKhoanRepository));
+            model.addAttribute("isUser", SecurityUtil.checkIsUser(taiKhoanRepository));
+            model.addAttribute("isAuth", SecurityUtil.checkIsAuth(taiKhoanRepository));
+            model.addAttribute("username", SecurityUtil.getUsernameLogin());
+            model.addAttribute("idKh", SecurityUtil.getIdKhachHangLogin(khachHangRepository, taiKhoanRepository));
+            Date newDate = new Date();
+            model.addAttribute("newDate", newDate);
+        }
+    }
+
+    public static class IPUtil {
+
+        public static List<GioHangChiTietDto> getShoppingCartDetails(GioHangChiTietService gioHangChiTietService) {
+            try {
+                // Lấy đối tượng InetAddress đại diện cho máy tính hiện tại
+                InetAddress localhost = InetAddress.getLocalHost();
+                // Lấy địa chỉ IP của máy tính
+                String ipAddress = localhost.getHostAddress();
+
+                // Gọi service để lấy danh sách chi tiết giỏ hàng
+                return gioHangChiTietService.getGioHangChiTiet(ipAddress);
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                // Handle exception or log the error
+                return Collections.emptyList(); // Return an empty list in case of an exception
+            }
+        }
+    }
 
 
     @GetMapping("hien-thi")
@@ -308,11 +352,11 @@ public class GioHangChiTietController {
         return "redirect:/gio-hang/hien-thi";
     }
 
+    @Transactional
     @PostMapping("thanh-toan")
     public String buy(Model model, @RequestParam(required = false) String tinh,
                       @RequestParam(required = false) String huyen,
                       @RequestParam(required = false) String phuong,
-                      @RequestParam(required = false) String diaChi,
                       @RequestParam(required = false) String diaChiNhan, @RequestParam(required = false) String sdtNguoiNhan,
                       @RequestParam(required = false) String hoNguoiNhan, @RequestParam(required = false) String tenNguoiNhan) {
 
@@ -322,7 +366,6 @@ public class GioHangChiTietController {
             model.addAttribute("tenNguoiNhan", tenNguoiNhan);
             model.addAttribute("sdtNguoiNhan", sdtNguoiNhan);
             model.addAttribute("diaChiNhan", diaChiNhan);
-            model.addAttribute("diaChi", diaChi);
             List<GioHangChiTietDto> listGhctDto = null;
 
 
@@ -489,13 +532,13 @@ public class GioHangChiTietController {
                 hoaDonReponsitory.delete(hoaDon);
                 model.addAttribute("listGhct", listGhctDto);
                 model.addAttribute("errorssss", "Số lượng sản phẩm trong kho không đủ !");
-            }if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null || diaChi == null) {
+            }if (tenNguoiNhan == null || hoNguoiNhan == null || diaChiNhan == null || sdtNguoiNhan == null || tinh == null || huyen == null || phuong == null) {
                     hoaDonReponsitory.delete(hoaDon);
                     model.addAttribute("errors", "Vui lòng điền đầy đủ thông tin để tiếp tục đặt hàng !");
                     model.addAttribute("listGhct", listGhctDto);
                     model.addAttribute("newDate", new Date());
                     return "gio_hang/hien_thi";
-            }if (tenNguoiNhan.isBlank() || hoNguoiNhan.isBlank() || diaChiNhan.isBlank() || sdtNguoiNhan.isBlank() || tinh.isBlank() || huyen.isBlank() || phuong.isBlank() || diaChi.isBlank()) {
+            }if (tenNguoiNhan.isBlank() || hoNguoiNhan.isBlank() || diaChiNhan.isBlank() || sdtNguoiNhan.isBlank() || tinh.isBlank() || huyen.isBlank() || phuong.isBlank()) {
                     hoaDonReponsitory.delete(hoaDon);
                     model.addAttribute("notBlank", "Chú ý : Các ô đánh dấu ( * ) không được để trống !");
                 model.addAttribute("listGhct", listGhctDto);
@@ -517,6 +560,35 @@ public class GioHangChiTietController {
                     }
                 }
 
+                List<TinhResponse> listTinh = ghnService.getProvinces();
+                List<String> listIdTinh = listTinh.stream().map(TinhResponse::getId).toList();
+                if (!listIdTinh.contains(tinh)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenTinh = listTinh.stream().filter(x -> x.getId().equals(tinh)).findFirst().get().getTenTinh();
+
+                List<HuyenResponse> listHuyen = ghnService.getDistricts(tinh);
+                List<String> listIdHuyen = listHuyen.stream().map(HuyenResponse::getId).toList();
+                if (!listIdHuyen.contains(huyen)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenHuyen = listHuyen.stream().filter(x -> x.getId().equals(huyen)).findFirst().get().getTenHuyen();
+
+                List<XaResponse> listXa = ghnService.getWards(huyen);
+                List<String> listIdXa  = listXa.stream().map(XaResponse::getMaXa).toList();
+                if (!listIdXa.contains(phuong)) {
+                    model.addAttribute("errors", "Vui lòng điền chính xác thông tin Địa chỉ nhận hàng !");
+                    model.addAttribute("listGhct", listGhctDto);
+                    return "gio_hang/hien_thi";
+                }
+                String tenXa = listXa.stream().filter(x -> x.getMaXa().equals(phuong)).findFirst().get().getTenXa();
+
+                Long phiVanCHuyen = ghnService.getTransportFee(huyen, phuong).getTongPhi();
+
                 // tao hoa don moi
                 hoaDon.setTrangThai(1L);
                 hoaDon.setNgayTao(new Date());
@@ -524,10 +596,10 @@ public class GioHangChiTietController {
                 hoaDon.setIdKhachHang(idKhachHang);
                 hoaDon.setNguoiNhan(hoNguoiNhan + " " + tenNguoiNhan);
                 hoaDon.setSdtNguoiNhan(sdtNguoiNhan);
-                hoaDon.setDiaChiNhan(diaChi + diaChiNhan);
+                hoaDon.setDiaChiNhan(tenTinh + ", " + tenHuyen + ", " + tenXa + ", " + diaChiNhan);
                 hoaDon.setTongTien(tongTien);
-                hoaDon.setPhiVanChuyen(0);
-                hoaDon.setThanhTien(tongTien);
+                hoaDon.setPhiVanChuyen(phiVanCHuyen.intValue());
+                hoaDon.setThanhTien(tongTien + phiVanCHuyen);
                 hoaDon.setLoaiHoaDon(1L);
                 // Luu hoa don
                 hoaDonReponsitory.save(hoaDon);
