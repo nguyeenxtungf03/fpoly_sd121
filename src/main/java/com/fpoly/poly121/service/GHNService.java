@@ -19,6 +19,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,11 +29,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -63,6 +65,7 @@ public class GHNService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        provinces.sort(Comparator.comparing(TinhResponse::getTenTinh));
         return provinces;
     }
 
@@ -90,6 +93,7 @@ public class GHNService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        districts.sort(Comparator.comparing(HuyenResponse::getTenHuyen));
         return districts;
     }
 
@@ -117,16 +121,44 @@ public class GHNService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        wards.sort(Comparator.comparing(XaResponse::getTenXa));
         return wards;
     }
 
     public PhiVanChuyenResponse getTransportFee (String idHuyen, String maXa) {
-        List<GioHangChiTietDto> listGhctDto;
-        String usernameLogin = SecurityUtil.getUsernameLogin();
-        if (Objects.isNull(usernameLogin))
-            listGhctDto = GioHangChiTietController.IPUtil.getShoppingCartDetails(gioHangChiTietService);
-        else listGhctDto = gioHangChiTietService.getGioHangChiTiet(usernameLogin);
-        if (listGhctDto.size() < 1) return new PhiVanChuyenResponse().setTongPhi(0L);
+        List<GioHangChiTietDto> listGhctDto = null;
+        // lay tk khi dang nhap
+        String tk = SecurityUtil.getUsernameLogin();
+        if (tk.isEmpty()) { // tk khi ko dang nhap
+            try {
+                // Lấy đối tượng InetAddress đại diện cho máy tính hiện tại
+                InetAddress localhost = InetAddress.getLocalHost();
+                // Lấy địa chỉ IP của máy tính
+                String ipAddress = localhost.getHostAddress();
+                // lay danh sach gio hang bang IP
+                listGhctDto = gioHangChiTietService.getGioHangChiTiet(ipAddress);
+
+                // check gio hang de trong
+                if (listGhctDto.isEmpty()) {
+                    return new PhiVanChuyenResponse().setTongPhi(0L);
+                }
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        } else { // tk khi dang nhap
+            // Gọi service để lấy danh sách chi tiết giỏ hàng
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            // Lấy danh sách giỏ hàng chi tiết của người dùng
+            listGhctDto = gioHangChiTietService.getGioHangChiTiet(username);
+
+            // check gio hang de trong
+            if (listGhctDto.isEmpty()) {
+                return new PhiVanChuyenResponse().setTongPhi(0L);
+            }
+        }
         Long weight = 0L;
         Long length = 27L;
         Long width = 13L;
