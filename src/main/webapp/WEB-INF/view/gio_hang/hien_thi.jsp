@@ -167,7 +167,7 @@
                 <th scope="col">Sản Phẩm</th>
                 <th scope="col">Số Lượng</th>
                 <th scope="col">Đơn Giá</th>
-                <th scope="col">Thành Tiền</th>
+                <th scope="col">Tổng Tiền</th>
                 <th scope="col">Chức Năng</th>
             </tr>
             </thead>
@@ -366,7 +366,7 @@
                     </select>
                 </div>
             </div>
-            <label>* Địa Chỉ Cụ Thể:</label>
+            <label><span style="color: red">*</span> Địa Chỉ Cụ Thể:</label>
             <textarea name="diaChiNhan" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn"
             >${diaChiNhan} </textarea><br>
 
@@ -537,6 +537,12 @@
         });
     });
 
+    document.addEventListener("DOMContentLoaded", function() {
+        if ('${err}') {
+            window.alert('${errMess}')
+        }
+    });
+
 </script>
 
 
@@ -569,6 +575,7 @@
     const districtSelect = document.getElementById('district');
     const wardSelect = document.getElementById('ward');
 
+    console.log("load provinces...")
     fetch('/ghn/province')
         .then(response => response.json())
         .then(result => {
@@ -579,11 +586,14 @@
                 option.value = item.id;
                 option.text = item.tenTinh;
                 provinceSelect.appendChild(option);
+                console.log(item)
             });
         })
         .catch(error => console.error('Lỗi khi gọi API getListProvince: ', error));
+    console.log("load provinces done")
 
     function loadDistrictSelect() {
+        console.log("load districts...")
         transportFeeSpan.innerText = '';
         totalAmountSpan.innerText = '';
         districtSelect.innerHTML = '';
@@ -608,12 +618,15 @@
                     option.value = item.id;
                     option.text = item.tenHuyen;
                     districtSelect.appendChild(option);
+                    console.log(option)
                 });
             })
             .catch(error => console.error('Lỗi khi gọi API getListDistrict: ', error));
+        console.log("load districts done")
     }
 
     function loadWardSelect() {
+        console.log("load wards...")
         transportFeeSpan.innerText = '';
         totalAmountSpan.innerText = '';
         wardSelect.innerHTML = '';
@@ -633,9 +646,11 @@
                     option.value = item.maXa;
                     option.text = item.tenXa;
                     wardSelect.appendChild(option);
+                    console.log(item)
                 });
             })
             .catch(error => console.error('Lỗi khi gọi API getListWard: ', error));
+        console.log("load wards done")
     }
 
     const transportFeeSpan = document.getElementById('transport-fee');

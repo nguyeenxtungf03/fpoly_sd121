@@ -30,7 +30,7 @@
 <c:set var="totalQuantity1" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '01'}">
-        <c:set var="totalQuantity1" value="${totalQuantity1 + hd.thanhTien}"/>
+        <c:set var="totalQuantity1" value="${totalQuantity1 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -39,7 +39,7 @@
 <c:set var="totalQuantity2" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '02'}">
-        <c:set var="totalQuantity2" value="${totalQuantity2 + hd.thanhTien}"/>
+        <c:set var="totalQuantity2" value="${totalQuantity2 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -48,7 +48,7 @@
 <c:set var="totalQuantity3" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '03'}">
-        <c:set var="totalQuantity3" value="${totalQuantity3 + hd.thanhTien}"/>
+        <c:set var="totalQuantity3" value="${totalQuantity3 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -57,7 +57,7 @@
 <c:set var="totalQuantity4" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '04'}">
-        <c:set var="totalQuantity4" value="${totalQuantity4 + hd.thanhTien}"/>
+        <c:set var="totalQuantity4" value="${totalQuantity4 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -65,7 +65,7 @@
 <c:set var="totalQuantity5" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '05'}">
-        <c:set var="totalQuantity5" value="${totalQuantity5 + hd.thanhTien}"/>
+        <c:set var="totalQuantity5" value="${totalQuantity5 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -73,7 +73,7 @@
 <c:set var="totalQuantity6" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '06'}">
-        <c:set var="totalQuantity6" value="${totalQuantity6 + hd.thanhTien}"/>
+        <c:set var="totalQuantity6" value="${totalQuantity6 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -82,7 +82,7 @@
 <c:set var="totalQuantity7" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '07'}">
-        <c:set var="totalQuantity7" value="${totalQuantity7 + hd.thanhTien}"/>
+        <c:set var="totalQuantity7" value="${totalQuantity7 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -91,7 +91,7 @@
 <c:set var="totalQuantity8" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '08'}">
-        <c:set var="totalQuantity8" value="${totalQuantity8 + hd.thanhTien}"/>
+        <c:set var="totalQuantity8" value="${totalQuantity8 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -100,7 +100,7 @@
 <c:set var="totalQuantity9" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '09'}">
-        <c:set var="totalQuantity9" value="${totalQuantity9 + hd.thanhTien}"/>
+        <c:set var="totalQuantity9" value="${totalQuantity9 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -109,7 +109,7 @@
 <c:set var="totalQuantity10" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '10'}">
-        <c:set var="totalQuantity10" value="${totalQuantity10 + hd.thanhTien}"/>
+        <c:set var="totalQuantity10" value="${totalQuantity10 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -117,7 +117,7 @@
 <c:set var="totalQuantity11" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '11'}">
-        <c:set var="totalQuantity11" value="${totalQuantity11 + hd.thanhTien}"/>
+        <c:set var="totalQuantity11" value="${totalQuantity11 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -126,7 +126,7 @@
 <c:set var="totalQuantity12" value="0"/>
 <c:forEach var="hd" items="${listHd1}">
     <c:if test="${fn:substring(hd.ngayTao, 5, 7) eq '12'}">
-        <c:set var="totalQuantity12" value="${totalQuantity12 + hd.thanhTien}"/>
+        <c:set var="totalQuantity12" value="${totalQuantity12 + hd.tongTien}"/>
     </c:if>
 </c:forEach>
 
@@ -140,7 +140,7 @@
                     <!-- Sử dụng forEach và EL để tính tổng soLuong -->
                     <c:set var="totalQuantityhd" value="0"/>
                     <c:forEach var="hd" items="${listHd1}">
-                        <c:set var="totalQuantityhd" value="${totalQuantityhd + hd.thanhTien}"/>
+                        <c:set var="totalQuantityhd" value="${totalQuantityhd + hd.tongTien}"/>
                     </c:forEach>
                     Tổng số tiền <span style="font-weight: 400"> : <fmt:formatNumber value="${totalQuantityhd}"
                                                                                      pattern="##,###,###"></fmt:formatNumber> ₫

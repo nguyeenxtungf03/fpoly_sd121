@@ -300,7 +300,7 @@
             <th scope="col">Tên Sản Phẩm</th>
             <th scope="col">Số Lượng</th>
             <th scope="col">Đơn Giá</th>
-            <th scope="col">Thành Tiền</th>
+            <th scope="col">Tổng Tiền</th>
         </tr>
         </thead>
         <tbody>

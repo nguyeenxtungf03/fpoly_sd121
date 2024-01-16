@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class BanHangController {
     private final BanHangSevice banHangSevice;
     private final HoaDonReponsitory hoaDonRepository;
     private final HoaDonChiTietReponsitory hoaDonChiTietRepository;
+    private final TaiKhoanRepository taiKhoanRepository;
 
     @GetMapping
     public String view(@RequestParam(defaultValue = "0") Integer page,
@@ -44,10 +46,20 @@ public class BanHangController {
         if (page < 1) page = 1;
         Pageable pageable = PageRequest.of(page - 1, 6);
         Page<SanPhamValue> pageSp = sanPhamReponsitory.searchBanHang(tenSp, pageable);
-        List<HoaDon> listHoaDonCho = hoaDonRepository.findByTrangThai(InvoiceStatus.CHO_THANH_TOAN.value.intValue());
-        model.addAttribute("username", SecurityUtil.getUsernameLogin());
-        model.addAttribute("listHoaDonCho", listHoaDonCho);
         model.addAttribute("pageSp",pageSp);
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
+        List<HoaDon> listHoaDonCho = hoaDonRepository.findByTrangThai(InvoiceStatus.CHO_THANH_TOAN.value.intValue());
+        model.addAttribute("username", username);
+        model.addAttribute("listHoaDonCho", listHoaDonCho);
         model.addAttribute("idHdc",idHdc);
         if (!Objects.isNull(idHdc)) {
             Optional<HoaDon> hoaDon = hoaDonRepository.findById(Long.parseLong(idHdc));
@@ -83,6 +95,16 @@ public class BanHangController {
                            @RequestParam(required = false) Long color,
                            @RequestParam(required = false) Long idHdc,
                            Model model) {
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
         List<HoaDon> listHoaDonCho = hoaDonRepository.findByTrangThai(InvoiceStatus.CHO_THANH_TOAN.value.intValue());
         model.addAttribute("username", SecurityUtil.getUsernameLogin());
         model.addAttribute("listHoaDonCho", listHoaDonCho);
@@ -120,6 +142,7 @@ public class BanHangController {
             model.addAttribute("idSpct", spct.getId().toString());
             model.addAttribute("mainSizeId", size);
             model.addAttribute("mainColorId", color);
+            model.addAttribute("displayProductInfo", true);
         } else {
             SanPham sp = sanPhamReponsitory.findById(idSp).get();
             List<SanPhamChiTiet> list = sanPhamChiTietRepository.findByIdSanPham(sp);
@@ -130,6 +153,7 @@ public class BanHangController {
             model.addAttribute("listColor",list.stream().map(SanPhamChiTiet::getIdMauSac).distinct().collect(Collectors.toList()));
             model.addAttribute("price", null);
             model.addAttribute("quantity", null);
+            model.addAttribute("displayProductInfo", false);
         }
         model.addAttribute("idHdc", idHdc);
         return "ban-hang/spct";
@@ -139,13 +163,29 @@ public class BanHangController {
     public String addToCart(@RequestParam(required = false) Long idSpct,
                             @RequestParam(required = false) Long soLuongMua,
                             @RequestParam(required = false) String idHdc,
-                            HttpSession session) {
+                            HttpSession session, Model model,
+                            @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer) {
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(idSpct).get();
+        if (sanPhamChiTiet.getSoLuong() < soLuongMua) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Số lượng sản phẩm không đủ !");
+            return "redirect:" + referrer;
+        }
         banHangSevice.themVaoGio(idSpct, soLuongMua, session);
         try {
 
 
             if (!idHdc.trim().equals("")) {
-                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(idSpct).get();
                 HoaDon hoaDon = hoaDonRepository.findById(Long.parseLong(idHdc)).get();
                 HoaDonChiTiet hdct = hoaDonChiTietRepository.save(new HoaDonChiTiet()
                         .setIdHoaDon(hoaDon)
@@ -168,7 +208,17 @@ public class BanHangController {
 
     @GetMapping("san-pham-trong-gio/{idSpct}/xoa")
     public String deleteFromCart(@PathVariable Long idSpct,
-                                 HttpSession session) {
+                                 HttpSession session, Model model) {
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
         banHangSevice.boKhoiGio(idSpct, session);
         return "redirect:/ban-hang";
     }
@@ -178,7 +228,17 @@ public class BanHangController {
                               @RequestParam(name = "idHdc", required = false) String idHdc,
                               @RequestParam(name = "giamGia", required = false) String giamGia,
                               @RequestParam(name = "ghiChu" ,required = false) String ghiChu,
-                              HttpSession session) {
+                              HttpSession session, Model model) {
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
         try {
             banHangSevice.luuHoaDon(action, idHdc, giamGia, ghiChu, session);
             return "redirect:/ban-hang";
@@ -189,7 +249,17 @@ public class BanHangController {
     }
 
     @GetMapping("/xoa-hoa-don-cho/{idHdc}")
-    public String xoaHoaDonCho(@PathVariable Long idHdc) {
+    public String xoaHoaDonCho(@PathVariable Long idHdc, Model model) {
+        String username = SecurityUtil.getUsernameLogin();
+        if (username.equals("")) {
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập để tiếp tục !");
+            return "redirect:/auth/dang-nhap";
+        } else if (!SecurityUtil.checkIsAdmin(taiKhoanRepository)){
+            model.addAttribute("err", true);
+            model.addAttribute("errMess", "Quyền truy cập không hợp lệ !");
+            return "redirect:/auth/dang-nhap";
+        }
         HoaDon hoaDon = hoaDonRepository.findById(idHdc).get();
         List<HoaDonChiTiet> list = hoaDonChiTietRepository.findByIdHoaDon(hoaDon);
         for (HoaDonChiTiet hdct : list) {

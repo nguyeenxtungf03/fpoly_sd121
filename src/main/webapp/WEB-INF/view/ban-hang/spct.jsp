@@ -51,42 +51,44 @@
                 </c:forEach>
             </div>
         </div>
-        <div class="col-8 mt-4" style="background-color: white; height: 600px;">
+        <div class="col-8 mt-4" style="background-color: white; height: 500px;">
             <div>
                 <h4>${tenSp}</h4>
             </div>
             <form method="get" id="formOptions">
-                <p style="margin: 5px">Màu Sắc: </p>
+                <p style="margin: 5px; font-weight: 600">Màu Sắc: </p>
                 <c:forEach items="${listColor}" var="color">
                     <input type="radio" class="btn-check" name="color" id="color${color.id}" autocomplete="off" value="${color.id}" <c:if test="${mainColorId == color.id}">checked</c:if> onclick="checkSelection()">
                     <label class="btn mb-3" for="color${color.id}">${color.tenMauSac}</label>
                 </c:forEach>
-                <p style="margin: 5px">Kích Thước: </p>
+                <p style="margin: 5px; font-weight: 600">Kích Thước: </p>
                 <c:forEach items="${listSize}" var="size">
                     <input type="radio" class="btn-check" name="size" id="size${size.id}" autocomplete="off" value="${size.id}" <c:if test="${mainSizeId == size.id}">checked</c:if> onclick="checkSelection()">
                     <label class="btn mb-3" for="size${size.id}">${size.tenKichThuoc}</label>
                 </c:forEach><br>
                 <input id="idHdcOption" name="idHdc" type="text" style="display: none">
             </form>
-            <p>Giá bán:
-                <c:if test="${giaKM == null}">
-                    ${price}
-                </c:if>
-                <c:if test="${giaKM != null}">
-                    <span style="color: red; text-decoration: line-through">${price}</span>
-                    <span>${giaKM}</span>
-                    <span style="color: green; margin-left: 30px">(sản phẩm đang được giảm giá ${mess})</span>
-                </c:if>
-            </p>
-            <p>Số lượng: ${quantity}</p>
-            <form method="post" action="/ban-hang/them-vao-gio">
-                <input style="display: none" type="text" value="${idSpct}" name="idSpct">
-                <label for="soLuong" class="form-label">Số lượng mua</label>
-                <input type="number" id="soLuong" name="soLuongMua" onkeyup="validateQuantity()" onchange="validateQuantity()">
-                <input id="idHdc" name="idHdc" type="text" style="display: none">
-                <button id="submitButton" class="btn btn-outline-secondary" type="submit" disabled>+</button>
-                <p id="errorText" style="color: red; display: none;">Số lượng vượt quá số lượng có sẵn!</p>
-            </form>
+            <div id="form-product-info" <c:if test="${displayProductInfo == false}">style="display: none"</c:if>>
+                <p><span style="font-weight: 600">Giá bán:</span>
+                    <c:if test="${giaKM == null}">
+                        ${price}
+                    </c:if>
+                    <c:if test="${giaKM != null}">
+                        <span style="color: red; text-decoration: line-through">${price}</span>
+                        <span>${giaKM}</span>
+                        <span style="color: green; margin-left: 30px">(sản phẩm đang được giảm giá ${mess})</span>
+                    </c:if>
+                </p>
+                <p><span style="font-weight: 600">Số lượng:</span> ${quantity}</p>
+                <form method="post" action="/ban-hang/them-vao-gio">
+                    <input style="display: none" type="text" value="${idSpct}" name="idSpct">
+                    <label for="soLuong" class="form-label" style="font-weight: 600">Số lượng mua</label>
+                    <input type="number" id="soLuong" name="soLuongMua" onkeyup="validateQuantity()" onchange="validateQuantity()">
+                    <input id="idHdc" name="idHdc" type="text" style="display: none">
+                    <button id="submitButton" class="btn btn-outline-secondary" type="submit" style="padding: 3px 12px; margin-bottom: 5px" disabled>+</button>
+                    <p id="errorText" style="color: red; display: none;">Số lượng vượt quá số lượng có sẵn!</p>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -96,6 +98,7 @@
 <script>
     const colorRadios = document.getElementsByName('color');
     const sizeRadios = document.getElementsByName('size');
+    const productInfo = document.getElementById('form-product-info');
 
     function checkSelection() {
         let colorSelected = false;
@@ -148,18 +151,12 @@
         if ('${idHdc}' != null) {
             myInput.value = '${idHdc}';
         } else {
-            myInput.value = ' ';
+            myInput.value = '  ';
         }
-    })
-
-    document.addEventListener("DOMContentLoaded", function() {
-        var myInput = document.getElementById('idHdcOption');
-        if ('${idHdc}' != null) {
-            myInput.value = '${idHdc}';
-        } else {
-            myInput.value = ' ';
+        if ('${err}') {
+            window.alert('${errMess}')
         }
-    })
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

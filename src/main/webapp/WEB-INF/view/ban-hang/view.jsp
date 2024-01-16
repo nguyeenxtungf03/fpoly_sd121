@@ -50,9 +50,9 @@
     </nav>
 </header>
 <section>
-    <div class="row" style="height: calc(100vh - 54px); margin: 0; padding: 10px 0 0 0">
+    <div class="row" style="height: calc(100vh - 76px); margin: 0; padding: 10px 0 0 0">
         <div class="col-9" style="height: 100%;">
-            <div class="w-100" style="height: 50%; background-color: #ffffff; overflow: auto;">
+            <div class="w-100" style="height: calc(50% - 26px); background-color: #ffffff; overflow: auto;">
                 <table class="table w-100">
                     <tbody>
                     <c:forEach items="${listSpgh}" var="spgh" varStatus="loop">
@@ -169,6 +169,9 @@
         } else {
             myInput.value = '  ';
         }
+       if ('${err}') {
+           window.alert('${errMess}')
+       }
     });
 </script>
 
